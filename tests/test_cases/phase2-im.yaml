@@ -1,0 +1,333 @@
+# Phase 2 IM Computer Use 测试用例
+# 设计目标：
+# 1. 所有发送类消息的目标联系人固定为“孙浩翔”
+# 2. instruction 必须模拟真实用户自然语言，只描述用户目标，不写方位提示、逐步操作提示或内部验收语句
+# 3. 覆盖 IM 端到端发送、上传、分享、回复、标记、搜索后处理等完整用户目标
+
+test_stages:
+  - id: im_basic_send
+    order: 1
+    name: 基础发送
+    description: 低风险文本、链接、多行与基础表情发送，用于快速验证会话定位、输入框、发送和 fast macro。
+    cases: [IM-P2-001, IM-P2-002, IM-P2-003, IM-P2-004, IM-P2-005, IM-P2-006]
+  - id: im_message_ops
+    order: 2
+    name: 消息级操作
+    description: 针对已存在消息的回复、标记和表情反应，验证消息定位、右键菜单、hover 工具条和上下文操作。
+    cases: [IM-P2-011, IM-P2-012, IM-P2-013, IM-P2-014, IM-P2-015, IM-P2-016]
+  - id: im_conversation_ops
+    order: 3
+    name: 会话级操作
+    description: 会话列表中的未读、标记、完成等操作，验证跨区域定位和列表状态变更。
+    cases: [IM-P2-017, IM-P2-018, IM-P2-019]
+  - id: im_attachment_share
+    order: 4
+    name: 附件与分享
+    description: 图片、文件、云文档、名片和更多发送选项，验证弹窗、picker、文件选择和真实卡片发送。
+    cases: [IM-P2-007, IM-P2-008, IM-P2-009, IM-P2-010, IM-P2-020, IM-P2-024, IM-P2-025]
+  - id: im_cross_view
+    order: 5
+    name: 跨视图与富文本
+    description: 文件/云文档视图打开和富文本发送，验证标签页、预览页和格式工具链。
+    cases: [IM-P2-021, IM-P2-022, IM-P2-023]
+
+test_cases:
+  - id: IM-P2-001
+    phase: phase-2
+    test_stage: im_basic_send
+    product: IM
+    name: 发送普通文本给孙浩翔
+    instruction: 给孙浩翔发送消息“CUA-Lark Phase2 IM 普通文本 001”
+    expected: 与孙浩翔的聊天记录中出现消息“CUA-Lark Phase2 IM 普通文本 001”
+    allowed_actions: [click, type_text, hotkey, wait, scroll]
+    verification:
+      method: final_visual_semantic
+      assertion: 孙浩翔聊天窗口中出现指定普通文本消息
+
+  - id: IM-P2-002
+    phase: phase-2
+    test_stage: im_basic_send
+    product: IM
+    name: 发送多行文本给孙浩翔
+    instruction: 给孙浩翔发送一条两行消息，第一行是“CUA-Lark Phase2 多行文本”，第二行是“第二行：IM 状态验证”
+    expected: 与孙浩翔的聊天记录中出现同一条包含两行内容的消息
+    allowed_actions: [click, type_text, hotkey, wait, scroll]
+    verification:
+      method: final_visual_semantic
+      assertion: 孙浩翔聊天窗口中出现指定两行文本消息
+
+  - id: IM-P2-003
+    phase: phase-2
+    test_stage: im_basic_send
+    product: IM
+    name: 发送链接消息给孙浩翔
+    instruction: 给孙浩翔发送消息“CUA-Lark 链接测试：https://open.feishu.cn/”
+    expected: 与孙浩翔的聊天记录中出现包含 https://open.feishu.cn/ 的链接消息或链接卡片
+    allowed_actions: [click, type_text, hotkey, wait, scroll]
+    verification:
+      method: final_visual_semantic
+      assertion: 孙浩翔聊天窗口中出现指定链接消息或链接预览卡片
+
+  - id: IM-P2-004
+    phase: phase-2
+    test_stage: im_basic_send
+    product: IM
+    name: 从表情面板发送第一个可见表情给孙浩翔
+    instruction: 给孙浩翔发送表情面板里的第一个可见表情
+    expected: 与孙浩翔的聊天记录中出现一条新发送的表情消息
+    allowed_actions: [click, hotkey, wait, scroll]
+    verification:
+      method: final_visual_semantic
+      assertion: 表情已出现在孙浩翔聊天记录中，而不是只停留在输入框内
+
+  - id: IM-P2-005
+    phase: phase-2
+    test_stage: im_basic_send
+    product: IM
+    name: 发送文本加第一个可见表情给孙浩翔
+    instruction: 给孙浩翔发送一条包含“CUA-Lark 文本加表情测试”和第一个可见表情的消息
+    expected: 与孙浩翔的聊天记录中出现包含“CUA-Lark 文本加表情测试”和一个表情的消息
+    allowed_actions: [click, type_text, hotkey, wait, scroll]
+    verification:
+      method: final_visual_semantic
+      assertion: 孙浩翔聊天窗口中出现文本加表情的组合消息
+
+  - id: IM-P2-006
+    phase: phase-2
+    test_stage: im_basic_send
+    product: IM
+    name: "@孙浩翔并发送消息"
+    instruction: 去和孙浩翔的聊天里 @孙浩翔，并发送消息“CUA-Lark Phase2 @提及 006”
+    expected: 与孙浩翔的聊天记录中出现包含 @孙浩翔 和“CUA-Lark Phase2 @提及 006”的消息
+    allowed_actions: [click, type_text, hotkey, wait, scroll]
+    verification:
+      method: final_visual_semantic
+      assertion: 孙浩翔聊天窗口中出现指定 @ 提及消息
+
+  - id: IM-P2-007
+    phase: phase-2
+    test_stage: im_attachment_share
+    product: IM
+    name: 使用图片视频入口发送测试图片给孙浩翔
+    instruction: 把本地图片“{{ASSETS_DIR}}/cua-lark-im-upload-test.png”发给孙浩翔
+    expected: 与孙浩翔的聊天记录中出现名为 cua-lark-im-upload-test.png 的图片消息或图片缩略图
+    allowed_actions: [click, type_text, hotkey, wait, scroll]
+    verification:
+      method: final_visual_semantic
+      assertion: 孙浩翔聊天窗口中出现测试图片消息，而不是本地路径文本
+
+  - id: IM-P2-008
+    phase: phase-2
+    test_stage: im_attachment_share
+    product: IM
+    name: 使用本地文件入口发送测试文件给孙浩翔
+    instruction: 把本地文件“{{ASSETS_DIR}}/cua-lark-im-upload-test.txt”发给孙浩翔
+    expected: 与孙浩翔的聊天记录中出现名为 cua-lark-im-upload-test.txt 的文件卡片
+    allowed_actions: [click, type_text, hotkey, wait, scroll]
+    verification:
+      method: final_visual_semantic
+      assertion: 孙浩翔聊天窗口中出现测试文件卡片，而不是本地路径文本
+
+  - id: IM-P2-009
+    phase: phase-2
+    test_stage: im_attachment_share
+    product: IM
+    name: 发送第一个可见云文档给孙浩翔
+    instruction: 给孙浩翔分享第一个可见云文档
+    expected: 与孙浩翔的聊天记录中出现一张云文档卡片
+    allowed_actions: [click, type_text, hotkey, wait, scroll]
+    verification:
+      method: final_visual_semantic
+      assertion: 孙浩翔聊天窗口中出现云文档分享卡片
+
+  - id: IM-P2-010
+    phase: phase-2
+    test_stage: im_attachment_share
+    product: IM
+    name: 搜索并发送第一个可见云文档给孙浩翔
+    instruction: 搜索“CUA-Lark”，把搜索结果里的第一个可见云文档分享给孙浩翔
+    expected: 与孙浩翔的聊天记录中出现搜索后发送的云文档卡片
+    allowed_actions: [click, type_text, hotkey, wait, scroll]
+    verification:
+      method: final_visual_semantic
+      assertion: 孙浩翔聊天窗口中出现搜索后选择的云文档分享卡片
+
+  - id: IM-P2-011
+    phase: phase-2
+    test_stage: im_message_ops
+    product: IM
+    name: 搜索指定文本并回复找到的消息
+    instruction: 在和孙浩翔的聊天记录里找到包含“CUA-Lark”的最近一条消息，并回复“我找到了 CUA-Lark 相关记录”
+    expected: 与孙浩翔的聊天记录中出现带引用关系的新回复消息“我找到了 CUA-Lark 相关记录”
+    allowed_actions: [click, right_click, type_text, hotkey, wait, scroll]
+    verification:
+      method: final_visual_semantic
+      assertion: 孙浩翔聊天窗口中出现对 CUA-Lark 相关消息的引用回复
+
+  - id: IM-P2-012
+    phase: phase-2
+    test_stage: im_message_ops
+    product: IM
+    name: 搜索链接消息并回复找到的结果
+    instruction: 在和孙浩翔的聊天记录里找到最近一条 open.feishu.cn 相关链接消息，并回复“我看到了 open.feishu.cn 链接”
+    expected: 与孙浩翔的聊天记录中出现带引用关系的新回复消息“我看到了 open.feishu.cn 链接”
+    allowed_actions: [click, right_click, type_text, hotkey, wait, scroll]
+    verification:
+      method: final_visual_semantic
+      assertion: 孙浩翔聊天窗口中出现对 open.feishu.cn 相关链接消息的引用回复
+
+  - id: IM-P2-013
+    phase: phase-2
+    test_stage: im_message_ops
+    product: IM
+    name: 发送并标记一条文本消息
+    instruction: 给孙浩翔发送消息“CUA-Lark Phase2 标记测试 013”，然后把这条消息标记起来
+    expected: 与孙浩翔的聊天记录中出现消息“CUA-Lark Phase2 标记测试 013”，且该消息显示已标记状态
+    allowed_actions: [click, right_click, type_text, hotkey, wait, scroll]
+    verification:
+      method: final_visual_semantic
+      assertion: 目标消息出现标记状态或再次右键时菜单显示已标记
+
+  - id: IM-P2-014
+    phase: phase-2
+    test_stage: im_message_ops
+    product: IM
+    name: 给当前可见非链接文本消息添加第一个表情回复
+    instruction: 给当前可见的最后一条非链接文本消息添加第一个可见表情回复
+    expected: 当前截图中最下方一条可操作的真实聊天消息旁出现一个新的表情反应
+    allowed_actions: [click, right_click, wait, scroll]
+    verification:
+      method: final_visual_semantic
+      assertion: 目标消息旁出现新添加的表情反应
+
+  - id: IM-P2-015
+    phase: phase-2
+    test_stage: im_message_ops
+    product: IM
+    name: 回复当前会话最后一条可见真实消息
+    instruction: 回复和孙浩翔聊天中最后一条可见的真实聊天消息，回复内容是“CUA-Lark Phase2 回复测试 015”
+    expected: 与孙浩翔的聊天记录中出现带引用块的回复消息“CUA-Lark Phase2 回复测试 015”
+    allowed_actions: [click, right_click, type_text, hotkey, wait, scroll]
+    verification:
+      method: final_visual_semantic
+      assertion: 孙浩翔聊天窗口中出现带引用关系的新回复消息
+
+  - id: IM-P2-016
+    phase: phase-2
+    test_stage: im_message_ops
+    product: IM
+    name: 标记孙浩翔发来的最后一条可见真实消息
+    instruction: 标记孙浩翔发来的最后一条可见真实聊天消息
+    expected: 孙浩翔发来的目标消息显示已标记状态
+    allowed_actions: [click, right_click, wait, scroll]
+    verification:
+      method: final_visual_semantic
+      assertion: 孙浩翔发来的最后一条可见真实消息出现标记状态或再次右键时菜单显示已标记
+
+  - id: IM-P2-017
+    phase: phase-2
+    test_stage: im_conversation_ops
+    product: IM
+    name: 会话列表右键孙浩翔并标为未读
+    instruction: 把孙浩翔的会话标为未读
+    expected: 左侧会话列表中的“孙浩翔”会话显示未读状态
+    allowed_actions: [click, right_click, wait, scroll]
+    verification:
+      method: final_visual_semantic
+      assertion: 孙浩翔会话在会话列表中呈现未读状态
+
+  - id: IM-P2-018
+    phase: phase-2
+    test_stage: im_conversation_ops
+    product: IM
+    name: 会话列表右键孙浩翔并标记会话
+    instruction: 标记孙浩翔的会话
+    expected: 左侧会话列表中的“孙浩翔”会话显示已标记状态
+    allowed_actions: [click, right_click, wait, scroll]
+    verification:
+      method: final_visual_semantic
+      assertion: 孙浩翔会话在会话列表中呈现已标记状态
+
+  - id: IM-P2-019
+    phase: phase-2
+    test_stage: im_conversation_ops
+    product: IM
+    name: hover 孙浩翔会话并点击完成
+    instruction: 将孙浩翔的会话标记为完成
+    expected: 孙浩翔会话被标记为完成
+    allowed_actions: [click, wait, scroll]
+    verification:
+      method: final_visual_semantic
+      assertion: 孙浩翔会话出现完成状态或从当前列表中移除
+
+  - id: IM-P2-020
+    phase: phase-2
+    test_stage: im_attachment_share
+    product: IM
+    name: 发送个人名片给孙浩翔
+    instruction: 给孙浩翔发送第一个可见个人名片
+    expected: 与孙浩翔的聊天记录中出现一张个人名片卡片
+    allowed_actions: [click, type_text, hotkey, wait, scroll]
+    verification:
+      method: final_visual_semantic
+      assertion: 孙浩翔聊天窗口中出现个人名片卡片
+
+  - id: IM-P2-021
+    phase: phase-2
+    test_stage: im_cross_view
+    product: IM
+    name: 从会话文件列表打开第一个可见文件
+    instruction: 打开和孙浩翔会话文件列表里的第一个可见文件
+    expected: 出现第一个可见文件的预览、详情页或打开状态
+    allowed_actions: [click, wait, scroll]
+    verification:
+      method: final_visual_semantic
+      assertion: 当前界面显示所选文件的预览、详情页或打开状态
+
+  - id: IM-P2-022
+    phase: phase-2
+    test_stage: im_cross_view
+    product: IM
+    name: 从会话云文档列表打开第一个可见云文档
+    instruction: 打开和孙浩翔会话云文档列表里的第一个可见云文档
+    expected: 出现第一个可见云文档的预览、详情页或打开状态
+    allowed_actions: [click, wait, scroll]
+    verification:
+      method: final_visual_semantic
+      assertion: 当前界面显示所选云文档的预览、详情页或打开状态
+
+  - id: IM-P2-023
+    phase: phase-2
+    test_stage: im_cross_view
+    product: IM
+    name: 发送加粗格式文本给孙浩翔
+    instruction: 给孙浩翔发送一条加粗消息“CUA-Lark 加粗格式测试 023”
+    expected: 与孙浩翔的聊天记录中出现加粗样式的消息“CUA-Lark 加粗格式测试 023”
+    allowed_actions: [click, type_text, hotkey, wait]
+    verification:
+      method: final_visual_semantic
+      assertion: 孙浩翔聊天窗口中出现指定加粗格式消息
+
+  - id: IM-P2-024
+    phase: phase-2
+    test_stage: im_attachment_share
+    product: IM
+    name: 通过更多发送选项发送测试图片
+    instruction: 通过更多发送选项把本地图片“{{ASSETS_DIR}}/cua-lark-im-upload-test.png”发给孙浩翔
+    expected: 与孙浩翔的聊天记录中出现名为 cua-lark-im-upload-test.png 的图片消息或图片缩略图
+    allowed_actions: [click, type_text, hotkey, wait, scroll]
+    verification:
+      method: final_visual_semantic
+      assertion: 孙浩翔聊天窗口中出现测试图片消息，而不是本地路径文本
+
+  - id: IM-P2-025
+    phase: phase-2
+    test_stage: im_attachment_share
+    product: IM
+    name: 修正误发路径文本的图片发送
+    instruction: 如果我刚才只是把测试图片路径文本发给了孙浩翔，请重新把这张图片作为真正的图片发给他
+    expected: 与孙浩翔的聊天记录中出现真实图片消息或图片缩略图，而不是只有本地路径文本
+    allowed_actions: [click, type_text, hotkey, wait, scroll]
+    verification:
+      method: final_visual_semantic
+      assertion: 孙浩翔聊天窗口中出现真实图片消息或图片缩略图，不能只出现本地路径文本

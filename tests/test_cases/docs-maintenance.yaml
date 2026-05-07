@@ -1,0 +1,27 @@
+# Docs maintenance cases for restoring test data through the visible GUI.
+# These are not formal phase-2 acceptance cases.
+
+test_cases:
+  - id: DOCS-MAINT-001
+    phase: maintenance
+    test_stage: docs_maintenance
+    product: Docs
+    name: 恢复测试文档标题
+    instruction: 将当前飞书云文档的标题恢复为“CUA-Lark Docs 测试文档 DOCS-P2-001”，不要修改正文内容
+    expected: 当前文档标题准确显示为“CUA-Lark Docs 测试文档 DOCS-P2-001”，正文内容保持不变
+    allowed_actions: [click, type_text, hotkey, wait]
+    verification:
+      method: final_visual_semantic
+      assertion: 当前文档标题准确显示为“CUA-Lark Docs 测试文档 DOCS-P2-001”，且正文内容没有被清空
+
+  - id: DOCS-MAINT-002
+    phase: maintenance
+    test_stage: docs_maintenance
+    product: Docs
+    name: 清理一级标题前的 Markdown 标记
+    instruction: 在当前飞书云文档正文中，确保一级标题“DOCS-P2-005 阶段进展”前没有可见的“#”或“# ”Markdown 标记，并保留标题文本和一级标题样式；如果当前截图已经显示该标题无可见“#”且仍是标题样式，直接完成；只有当可见“#”标记仍在标题文字前时，才点击“#”右侧并按退格删除该标记
+    expected: 正文中显示一级标题“DOCS-P2-005 阶段进展”，标题前不再显示“#”标记
+    allowed_actions: [click, hotkey, wait]
+    verification:
+      method: final_visual_semantic
+      assertion: 正文中显示一级标题“DOCS-P2-005 阶段进展”，标题前不再显示“#”或“# ”标记

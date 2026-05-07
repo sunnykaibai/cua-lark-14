@@ -1,0 +1,144 @@
+# Phase 1 稳定单步验收用例
+# 对齐 PDF M1：能在飞书上完成 5 个单步操作。
+
+test_cases:
+  - id: P1-001
+    phase: phase-1
+    name: 点击消息图标
+    instruction: 点击飞书左侧导航栏的消息图标
+    expected: 当前界面切换到消息页面
+    type: click
+    risk_level: low
+    allowed_actions: [click]
+    preconditions:
+      - 飞书桌面端已启动、已登录、窗口在前台且未被遮挡
+    verification:
+      method: visual_semantic
+      assertion: 侧边栏消息入口处于选中状态，主区域显示消息会话列表
+
+  - id: P1-002
+    phase: phase-1
+    name: 点击日历图标
+    instruction: 点击飞书左侧导航栏的日历图标
+    expected: 当前界面切换到日历页面
+    type: click
+    risk_level: low
+    allowed_actions: [click]
+    preconditions:
+      - 飞书桌面端已启动、已登录、窗口在前台且未被遮挡
+    verification:
+      method: visual_semantic
+      assertion: 侧边栏日历入口处于选中状态，主区域显示日历视图
+
+  - id: P1-003
+    phase: phase-1
+    name: 点击全局搜索框
+    instruction: 点击飞书窗口顶部的搜索输入框
+    expected: 搜索框获得焦点
+    type: click
+    risk_level: low
+    allowed_actions: [click]
+    preconditions:
+      - 飞书桌面端已启动、已登录、窗口在前台且未被遮挡
+    verification:
+      method: visual_semantic
+      assertion: 搜索框处于聚焦状态或出现搜索下拉面板
+
+  - id: P1-004
+    phase: phase-1
+    name: 搜索框输入文字
+    instruction: 在当前已聚焦的飞书搜索框中输入"CUA-Lark"
+    expected: 搜索框中出现 CUA-Lark 文本
+    type: type_text
+    risk_level: low
+    allowed_actions: [type_text]
+    preconditions:
+      - 飞书搜索框已获得焦点
+    verification:
+      method: visual_semantic
+      assertion: 搜索框中显示 CUA-Lark 文本
+
+  - id: P1-005
+    phase: phase-1
+    name: 向下滚动消息列表
+    instruction: 在当前消息列表区域向下滚动3次
+    expected: 消息列表内容发生滚动
+    type: scroll
+    risk_level: low
+    allowed_actions: [scroll]
+    preconditions:
+      - 当前位于消息页面
+      - 消息列表有足够多的可滚动内容
+    verification:
+      method: pixel_and_visual
+      assertion: 消息列表可见内容发生位移
+
+  - id: P1-006
+    phase: phase-1
+    name: 打开查找快捷键
+    instruction: 按下Command+F打开当前页面的查找或搜索功能
+    expected: 出现查找输入框或搜索焦点
+    type: hotkey
+    risk_level: medium
+    allowed_actions: [hotkey]
+    preconditions:
+      - 当前页面支持 Command+F
+    verification:
+      method: visual_semantic
+      assertion: 页面出现查找框或搜索输入焦点
+
+  - id: P1-007
+    phase: phase-1
+    name: 点击通讯录图标
+    instruction: 点击飞书左侧导航栏的通讯录图标
+    expected: 当前界面切换到通讯录页面
+    type: click
+    risk_level: low
+    allowed_actions: [click]
+    preconditions:
+      - 飞书桌面端已登录，窗口可见
+    verification:
+      method: visual_semantic
+      assertion: 主区域显示通讯录或联系人列表
+
+  - id: P1-008
+    phase: phase-1
+    name: 点击云文档图标
+    instruction: 点击飞书左侧导航栏的云文档图标
+    expected: 当前界面切换到云文档页面
+    type: click
+    risk_level: low
+    allowed_actions: [click]
+    preconditions:
+      - 飞书桌面端已登录，窗口可见
+    verification:
+      method: visual_semantic
+      assertion: 主区域显示云文档入口、最近文档或文档列表
+
+  - id: P1-009
+    phase: phase-1
+    name: 点击工作台图标
+    instruction: 点击飞书左侧导航栏的工作台图标
+    expected: 当前界面切换到工作台页面
+    type: click
+    risk_level: low
+    allowed_actions: [click]
+    preconditions:
+      - 飞书桌面端已登录，窗口可见
+    verification:
+      method: visual_semantic
+      assertion: 主区域显示工作台应用列表或工作台内容
+
+  - id: P1-010
+    phase: phase-1
+    name: 回到消息页面
+    instruction: 点击飞书左侧导航栏的消息图标
+    expected: 当前界面切换回消息页面
+    type: click
+    risk_level: low
+    allowed_actions: [click]
+    preconditions:
+      - 飞书桌面端已登录，窗口可见
+    verification:
+      method: visual_semantic
+      assertion: 主区域显示消息会话列表

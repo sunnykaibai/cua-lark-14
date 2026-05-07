@@ -1,0 +1,100 @@
+# Calendar end-to-end demo suite.
+# Purpose: demonstrate universal visual-grounding capability on a weak-rule
+# product: no Calendar-specific rule modules, only product navigation plus
+# screenshot grounding, multi-action execution, and feedback.
+# Continues the narrative from docs-demo-e2e.yaml: after writing the collaboration
+# record, we schedule a follow-up meeting with 孙浩翔 and share the calendar
+# outcome back to the collaborator.
+# Mail is intentionally excluded from the main demo because the current Feishu
+# tenant does not expose a native Mail entry; app-center search only showed
+# third-party mail integrations.
+
+test_stages:
+  - id: calendar_demo_e2e
+    order: 1
+    name: Calendar 通用视觉能力 Demo
+    description: 在无 Calendar 专属规则的条件下，用三个连贯 case 覆盖创建日程、邀请参会人、修改日程时间、查看详情、分享/同步日程并回到 IM 确认，展示跨产品通用操作能力。
+    cases:
+      - CAL-DEMO-E2E-001
+      - CAL-DEMO-E2E-002
+      - CAL-DEMO-E2E-003
+
+test_cases:
+  # ============================================================
+  # Calendar: 3 linked cases cover create + invite + modify + share/IM confirm.
+  # ============================================================
+  - id: CAL-DEMO-E2E-001
+    phase: demo
+    test_stage: calendar_demo_e2e
+    product: Calendar
+    name: 创建复盘同步日程并邀请参会人
+    instruction: >
+      承接协作记录中的待办"和孙浩翔确认日历提醒时间"，从当前界面进入飞书日历，创建一个新日程：
+
+      1. 日程标题设为"CUA-Lark Demo 复盘同步 20260507"。
+
+      2. 将日程日期设为 2026年5月7日，开始时间设为 12:00，结束时间设为 12:30。
+
+      3. 添加孙浩翔为参会人。在添加参会人或查看日程时，注意观察是否出现忙闲/空闲状态信息或参会人状态提示。
+
+      4. 保存/创建该日程。创建成功后，打开刚创建的日程详情，确认标题、12:00-12:30 时间和参会人孙浩翔可见后再完成。
+
+      如果当前日历中已经存在标题为"CUA-Lark Demo 复盘同步 20260507"且时间为 12:00-12:30 的日程，打开该日程详情并确认孙浩翔可见后直接完成，不要重复创建。
+    expected: 日历中存在"CUA-Lark Demo 复盘同步 20260507"日程，参会人包含孙浩翔，时间为 12:00-12:30
+    verification:
+      method: final_visual_semantic
+      assertion: >
+        当前界面可见日程"CUA-Lark Demo 复盘同步 20260507"的详情弹窗或清晰日程详情，
+        满足以下条件：(1) 日程标题包含"CUA-Lark Demo 复盘同步 20260507"，
+        (2) 参会人/与会者列表中可见孙浩翔，
+        (3) 时间显示为 2026年5月7日 12:00-12:30。
+        不能只是停留在日程创建表单未保存状态，也不能只停留在周视图日程条目而看不到参会人。
+
+  - id: CAL-DEMO-E2E-002
+    phase: demo
+    test_stage: calendar_demo_e2e
+    product: Calendar
+    name: 修改复盘同步日程时间
+    instruction: >
+      打开飞书日历中标题为"CUA-Lark Demo 复盘同步 20260507"的日程，进入编辑模式，把结束时间从 12:30 修改为 13:00，然后保存。
+
+      如果当前日程详情已经显示该日程，直接进入编辑并修改结束时间。
+
+      如果日历中已经存在该日程且结束时间已经是 13:00，打开该日程详情确认后直接完成，不要重复修改。
+    expected: 日历中"CUA-Lark Demo 复盘同步 20260507"日程的时间被修改为 12:00-13:00
+    verification:
+      method: final_visual_semantic
+      assertion: >
+        当前界面可见日程"CUA-Lark Demo 复盘同步 20260507"的详情或日历视图中的日程条目，
+        时间显示为 2026年5月7日 12:00-13:00，或结束时间明确为 13:00。
+        不能只是停留在未保存的编辑表单中，也不能仍显示结束时间 12:30。
+
+  - id: CAL-DEMO-E2E-003
+    phase: demo
+    test_stage: calendar_demo_e2e
+    product: Calendar
+    name: 分享复盘同步日程并回到 IM 确认
+    instruction: >
+      打开飞书日历中标题为"CUA-Lark Demo 复盘同步 20260507"的日程详情，先确认标题、时间和参会人信息：
+
+      1. 标题应为"CUA-Lark Demo 复盘同步 20260507"。
+
+      2. 时间应为 2026年5月7日 12:00-13:00。
+
+      3. 参会人/与会者中应包含孙浩翔。
+
+      优先使用当前日程详情页中可见的分享、转发、发送、更多或邀请相关入口，把日程信息发送/分享给孙浩翔。
+
+      如果当前日程详情中已经显示孙浩翔是参会人，且界面没有单独可用的分享入口，可以打开可见的更多/分享入口查看分享状态；确认孙浩翔已经在参会人或分享对象中后完成，不要重复创建日程。
+
+      如果分享流程跳转到 IM 或联系人选择器，选择孙浩翔并发送/确认。
+
+      分享成功后，返回飞书消息界面，进入和孙浩翔的聊天，发送确认消息："日程已分享，请确认"。
+    expected: 当前日程已通过日历分享/邀请/发送流程同步给孙浩翔，并在和孙浩翔的 IM 聊天中发送"日程已分享，请确认"
+    verification:
+      method: final_visual_semantic
+      assertion: >
+        当前界面最终应在飞书消息/IM 的孙浩翔聊天中，能看到当前轮发送的确认消息"日程已分享，请确认"。
+        过程允许先在 Calendar 详情中确认标题"CUA-Lark Demo 复盘同步 20260507"、时间 2026年5月7日 12:00-13:00、参会人孙浩翔，
+        并通过日程分享/发送入口分享给孙浩翔。
+        不能只是停留在日程详情、分享成功 toast、未发送的联系人搜索框或未发送的消息草稿。

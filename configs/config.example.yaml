@@ -1,0 +1,73 @@
+# CUA-Lark 配置文件
+# 复制本文件为 config.yaml 并填写真实配置
+
+# VLM 配置
+vlm:
+  # 可选：seed-2.0, gpt-4o, claude-3.5-sonnet
+  default_backend: "seed-2.0"
+  
+  # Seed 2.0 配置
+  seed_2_0:
+    # 推荐留空并通过 ARK_API_KEY 或本地 .env 提供真实密钥。
+    api_key: ""
+    base_url: "https://ark.cn-beijing.volces.com/api/v3"
+    # 可留空并通过 ARK_MODEL 提供模型名。
+    model: "seed-2.0-pro:20250515"
+    timeout: 30
+    max_retries: 3
+
+# 操作控制配置
+executor:
+  # 操作延迟（秒），每个操作执行后等待时间
+  operation_delay: 0.8
+  # 鼠标移动速度（秒），0 表示立即移动
+  mouse_move_duration: 0.2
+  # 输入间隔（秒），每个字符输入间隔
+  type_interval: 0.05
+  # 距离屏幕边缘的最小安全像素，避免点到极限边界
+  screen_edge_padding: 4
+  # 靠近 macOS 底边时，向上留出的 Dock 安全距离
+  dock_activation_margin: 18
+  # 使用 bounding box 生成点击点时向内收缩的像素
+  locator_inset: 10
+
+# 截图配置
+screenshot:
+  # 保存截图到本地（用于调试）
+  save_to_disk: true
+  # 截图保存路径
+  save_path: "outputs/screenshots/"
+  # 截图格式：png, jpg
+  format: "png"
+  # 优先截取飞书窗口区域，而不是全屏
+  prefer_app_window: true
+  # macOS 窗口 Owner 名称候选
+  app_names:
+    - "飞书"
+    - "Feishu"
+    - "Lark"
+  # Docs 可能由浏览器窗口承载；默认不抢占飞书窗口，运行 Docs 可配合 --prefer-browser-docs 动态优先浏览器 Docs 窗口。
+  browser_app_names:
+    - "Safari"
+    - "Safari浏览器"
+    - "Google Chrome"
+    - "Chrome"
+    - "Arc"
+  browser_title_keywords:
+    - "feishu.cn"
+    - "larksuite.com"
+    - "飞书云文档"
+    - "未命名文档"
+    - "新建空白文档"
+    - "无标题"
+    - "入口鲁棒性"
+    - "DOCS-ENTRY-TARGET"
+  # 找不到匹配窗口时，先尝试激活这些宿主应用再重新捕获。入口类 Docs 默认飞书优先；只有浏览器专项用例才配合 --prefer-browser-docs。
+  app_recovery_names:
+    - "飞书"
+    - "Feishu"
+    - "Lark"
+    - "Safari"
+    - "Safari浏览器"
+    - "Google Chrome"
+  recovery_attempts: 2

@@ -1,0 +1,481 @@
+# Docs feature deep-area auto-tackle cases
+# 设计目标：
+# 1. 扩展 Docs 精准编辑、格式化与导航鲁棒性覆盖，不替换 docs-autotackle.yaml
+# 2. instruction 只描述真实用户目标，不包含坐标、方位或内部验收话术
+# 3. expected/assertion 仅用于最终验证与报告；执行仍保持 VLM-first
+
+test_stages:
+  - id: docs_feature_prep
+    order: 0
+    name: Docs 功能素材准备
+    description: 将深水区功能测试所需的唯一锚点素材导入目标文档；若素材已存在则保持不重复。
+    cases:
+      - DOCS-FEAT-PREP-001
+  - id: docs_precise_editing
+    order: 1
+    name: Docs 精准编辑
+    description: 围绕唯一文本锚点执行段后追加、词语替换、短句删除、撤销重做等细粒度正文编辑。
+    cases:
+      - DOCS-FEAT-EDIT-001
+      - DOCS-FEAT-EDIT-002
+      - DOCS-FEAT-EDIT-003
+      - DOCS-FEAT-EDIT-004
+  - id: docs_formatting
+    order: 2
+    name: Docs 格式化
+    description: 对指定文本和锚点附近内容执行加粗、引用块、代码块或行内代码、标题或列表转换。
+    cases:
+      - DOCS-FEAT-FMT-001
+      - DOCS-FEAT-FMT-002
+      - DOCS-FEAT-FMT-003
+      - DOCS-FEAT-FMT-004
+  - id: docs_navigation_robustness
+    order: 3
+    name: Docs 导航鲁棒性
+    description: 使用文档内搜索、滚动和目录/侧栏辅助定位深层唯一文本锚点。
+    cases:
+      - DOCS-FEAT-NAV-001
+      - DOCS-FEAT-NAV-002
+      - DOCS-FEAT-NAV-003
+      - DOCS-FEAT-NAV-004
+  - id: docs_realistic_composition
+    order: 4
+    name: Docs 真人组合操作
+    description: 覆盖表格、清单、分割线、链接、评论、局部复制粘贴、段落重排、搜索/滚动后编辑、标题目录与嵌套列表等更接近真人云文档使用的动作。
+    cases:
+      - DOCS-FEAT-COMP-001
+      - DOCS-FEAT-COMP-002
+      - DOCS-FEAT-COMP-003
+      - DOCS-FEAT-COMP-004
+      - DOCS-FEAT-COMP-005
+      - DOCS-FEAT-COMP-006
+      - DOCS-FEAT-COMP-007
+      - DOCS-FEAT-COMP-008
+      - DOCS-FEAT-COMP-009
+      - DOCS-FEAT-COMP-010
+      - DOCS-FEAT-COMP-011
+      - DOCS-FEAT-COMP-012
+      - DOCS-FEAT-COMP-013
+      - DOCS-FEAT-COMP-014
+      - DOCS-FEAT-COMP-015
+
+test_cases:
+  - id: DOCS-FEAT-PREP-001
+    phase: phase-2
+    test_stage: docs_feature_prep
+    product: Docs
+    name: 导入 Docs 深水区功能素材
+    instruction: 打开“CUA-Lark Docs 测试文档 DOCS-P2-001”，如果正文中还没有“DOCS-FEATURE-MATERIAL-ROOT-7A2D”，就把本地 Markdown 素材追加到正文末尾；如果已经存在该素材根标识，则保持当前文档不重复导入
+    expected: 目标文档正文中可见 DOCS-FEATURE-MATERIAL-ROOT-7A2D，且没有重复导入整份素材
+    input_materials:
+      - path: "{{ASSETS_DIR}}/docs-feature-material.md"
+        label: docs-feature-material.md
+    allowed_actions: [click, type_text, hotkey, wait, scroll]
+    verification:
+      method: final_visual_semantic
+      assertion: 当前页面是“CUA-Lark Docs 测试文档 DOCS-P2-001”，正文中可见“DOCS-FEATURE-MATERIAL-ROOT-7A2D”或素材中的多个 DOCS-FEATURE 锚点；如果可见重复根标识，不能明显显示为刚刚连续粘贴了第二份完整素材
+
+  - id: DOCS-FEAT-EDIT-001
+    phase: phase-2
+    test_stage: docs_precise_editing
+    product: Docs
+    name: 在指定段落后追加一句
+    instruction: 打开“CUA-Lark Docs 测试文档 DOCS-P2-001”，找到包含“DOCS-FEATURE-ANCHOR-APPEND-91C4”的段落，在这段后追加一句“DOCS-FEATURE-APPENDED-SENTENCE-5F20：段后追加成功”
+    expected: 指定锚点段落后新增一句 DOCS-FEATURE-APPENDED-SENTENCE-5F20，原段落内容没有被覆盖
+    input_materials:
+      - path: "{{ASSETS_DIR}}/docs-feature-material.md"
+        label: docs-feature-material.md
+    allowed_actions: [click, type_text, hotkey, wait, scroll]
+    verification:
+      method: final_visual_semantic
+      assertion: 文档正文中“DOCS-FEATURE-ANCHOR-APPEND-91C4”之后可见“DOCS-FEATURE-APPENDED-SENTENCE-5F20：段后追加成功”，且锚点段落仍保留
+
+  - id: DOCS-FEAT-EDIT-002
+    phase: phase-2
+    test_stage: docs_precise_editing
+    product: Docs
+    name: 替换指定词语
+    instruction: 打开“CUA-Lark Docs 测试文档 DOCS-P2-001”，在包含“DOCS-FEATURE-ANCHOR-REPLACE-2A8F”的句子中，把“蓝色信标”改成“青色信标”
+    expected: 指定句子中的“蓝色信标”被替换为“青色信标”
+    input_materials:
+      - path: "{{ASSETS_DIR}}/docs-feature-material.md"
+        label: docs-feature-material.md
+    allowed_actions: [click, type_text, hotkey, wait, scroll]
+    verification:
+      method: final_visual_semantic
+      assertion: 包含“DOCS-FEATURE-ANCHOR-REPLACE-2A8F”的句子显示“青色信标”，且同一句中不再显示“蓝色信标”
+
+  - id: DOCS-FEAT-EDIT-003
+    phase: phase-2
+    test_stage: docs_precise_editing
+    product: Docs
+    name: 删除指定短句
+    instruction: 打开“CUA-Lark Docs 测试文档 DOCS-P2-001”，从包含“DOCS-FEATURE-ANCHOR-DELETE-0D6B”的段落里删除短句“临时短句-DELETE-ME-74B1”
+    expected: 指定段落保留锚点和其他正文，但不再包含待删除短句
+    input_materials:
+      - path: "{{ASSETS_DIR}}/docs-feature-material.md"
+        label: docs-feature-material.md
+    allowed_actions: [click, type_text, hotkey, wait, scroll]
+    verification:
+      method: final_visual_semantic
+      assertion: 文档正文中仍可见“DOCS-FEATURE-ANCHOR-DELETE-0D6B”，但不可见“临时短句-DELETE-ME-74B1”
+
+  - id: DOCS-FEAT-EDIT-004
+    phase: phase-2
+    test_stage: docs_precise_editing
+    product: Docs
+    name: 撤销并重做一次编辑
+    instruction: 打开“CUA-Lark Docs 测试文档 DOCS-P2-001”，在包含“DOCS-FEATURE-ANCHOR-UNDO-REDO-9D2E”的段落后新增“DOCS-FEATURE-UNDO-REDO-FINAL-1C90”，然后撤销这次新增，再重做恢复它
+    expected: 完成撤销和重做后，新增文本最终存在且没有重复
+    input_materials:
+      - path: "{{ASSETS_DIR}}/docs-feature-material.md"
+        label: docs-feature-material.md
+    allowed_actions: [click, type_text, hotkey, wait, scroll]
+    verification:
+      method: final_visual_semantic
+      assertion: 文档正文中“DOCS-FEATURE-ANCHOR-UNDO-REDO-9D2E”之后最终可见且只出现一次“DOCS-FEATURE-UNDO-REDO-FINAL-1C90”
+
+  - id: DOCS-FEAT-FMT-001
+    phase: phase-2
+    test_stage: docs_formatting
+    product: Docs
+    name: 加粗指定文本
+    instruction: 打开“CUA-Lark Docs 测试文档 DOCS-P2-001”，把文本“DOCS-FEATURE-BOLD-TARGET-C3F7”设置为加粗
+    expected: 指定文本仍可见，并呈现加粗样式
+    input_materials:
+      - path: "{{ASSETS_DIR}}/docs-feature-material.md"
+        label: docs-feature-material.md
+    allowed_actions: [click, type_text, hotkey, wait, scroll, drag]
+    verification:
+      method: final_visual_semantic
+      assertion: 文档正文中“DOCS-FEATURE-BOLD-TARGET-C3F7”可见，且该文本呈现为加粗或明显粗体样式
+
+  - id: DOCS-FEAT-FMT-002
+    phase: phase-2
+    test_stage: docs_formatting
+    product: Docs
+    name: 插入引用块
+    instruction: 打开“CUA-Lark Docs 测试文档 DOCS-P2-001”，在“DOCS-FEATURE-QUOTE-ANCHOR-6E31”后插入引用块，引用内容为“DOCS-FEATURE-QUOTE-BLOCK-6E31：引用块视觉验证”
+    expected: 锚点后出现引用块样式的指定内容
+    input_materials:
+      - path: "{{ASSETS_DIR}}/docs-feature-material.md"
+        label: docs-feature-material.md
+    allowed_actions: [click, type_text, hotkey, wait, scroll]
+    verification:
+      method: final_visual_semantic
+      assertion: 文档正文中“DOCS-FEATURE-QUOTE-BLOCK-6E31：引用块视觉验证”可见，并呈现为引用块样式或引用结构
+
+  - id: DOCS-FEAT-FMT-003
+    phase: phase-2
+    test_stage: docs_formatting
+    product: Docs
+    name: 插入代码块或行内代码
+    instruction: 打开“CUA-Lark Docs 测试文档 DOCS-P2-001”，在“DOCS-FEATURE-CODE-ANCHOR-B8A4”后加入代码内容“const docsFeatureProbe = 'DOCS-FEATURE-CODE-B8A4';”，使用代码块或行内代码样式
+    expected: 指定代码内容出现在锚点后，并呈现代码样式
+    input_materials:
+      - path: "{{ASSETS_DIR}}/docs-feature-material.md"
+        label: docs-feature-material.md
+    allowed_actions: [click, type_text, hotkey, wait, scroll]
+    verification:
+      method: final_visual_semantic
+      assertion: 文档正文中可见“const docsFeatureProbe = 'DOCS-FEATURE-CODE-B8A4';”，且该内容呈现为代码块或行内代码样式
+
+  - id: DOCS-FEAT-FMT-004
+    phase: phase-2
+    test_stage: docs_formatting
+    product: Docs
+    name: 将普通段落转成标题或列表
+    instruction: 打开“CUA-Lark Docs 测试文档 DOCS-P2-001”，把包含“DOCS-FEATURE-STRUCTURE-TARGET-4B11”的普通段落转换成标题；如果当前编辑器更适合列表样式，也可以转换成列表项
+    expected: 指定段落不再是普通正文，呈现为标题或列表结构
+    input_materials:
+      - path: "{{ASSETS_DIR}}/docs-feature-material.md"
+        label: docs-feature-material.md
+    allowed_actions: [click, type_text, hotkey, wait, scroll]
+    verification:
+      method: final_visual_semantic
+      assertion: “DOCS-FEATURE-STRUCTURE-TARGET-4B11”可见，且所在行呈现为标题样式或列表项结构，而不是普通段落
+
+  - id: DOCS-FEAT-NAV-001
+    phase: phase-2
+    test_stage: docs_navigation_robustness
+    product: Docs
+    name: 文档内搜索关键文本
+    instruction: 打开“CUA-Lark Docs 测试文档 DOCS-P2-001”，在文档内查找“DOCS-FEATURE-SEARCH-TARGET-A71E”，并停留在包含它的段落
+    expected: 文档定位到包含 DOCS-FEATURE-SEARCH-TARGET-A71E 的段落
+    input_materials:
+      - path: "{{ASSETS_DIR}}/docs-feature-material.md"
+        label: docs-feature-material.md
+    allowed_actions: [click, type_text, hotkey, wait, scroll]
+    verification:
+      method: final_visual_semantic
+      assertion: 当前文档正文可见“DOCS-FEATURE-SEARCH-TARGET-A71E”，并且视图停留在包含该文本的段落附近
+
+  - id: DOCS-FEAT-NAV-002
+    phase: phase-2
+    test_stage: docs_navigation_robustness
+    product: Docs
+    name: 滚动到目标段落
+    instruction: 打开“CUA-Lark Docs 测试文档 DOCS-P2-001”，滚动到包含“DOCS-FEATURE-DEEP-SCROLL-TARGET-D54A”的段落
+    expected: 深层目标段落进入当前可见正文区域
+    input_materials:
+      - path: "{{ASSETS_DIR}}/docs-feature-material.md"
+        label: docs-feature-material.md
+    allowed_actions: [click, wait, scroll]
+    verification:
+      method: final_visual_semantic
+      assertion: 当前文档正文区域可见“DOCS-FEATURE-DEEP-SCROLL-TARGET-D54A”
+
+  - id: DOCS-FEAT-NAV-003
+    phase: phase-2
+    test_stage: docs_navigation_robustness
+    product: Docs
+    name: 从目录辅助定位章节
+    instruction: 打开“CUA-Lark Docs 测试文档 DOCS-P2-001”，借助文档目录定位到“DOCS-FEATURE-TOC-HEADING-E19F”这一节
+    expected: 文档视图定位到 DOCS-FEATURE-TOC-HEADING-E19F 章节
+    input_materials:
+      - path: "{{ASSETS_DIR}}/docs-feature-material.md"
+        label: docs-feature-material.md
+    allowed_actions: [click, wait, scroll]
+    verification:
+      method: final_visual_semantic
+      assertion: 当前文档正文可见章节标题“DOCS-FEATURE-TOC-HEADING-E19F”或该章节正文“DOCS-FEATURE-TOC-BODY-E19F”
+
+  - id: DOCS-FEAT-NAV-004
+    phase: phase-2
+    test_stage: docs_navigation_robustness
+    product: Docs
+    name: 从侧栏辅助定位收藏或最近文档
+    instruction: 从当前飞书云文档界面打开“CUA-Lark Docs 测试文档 DOCS-P2-001”，并定位到包含“DOCS-FEATURE-SIDEBAR-LOCATE-F0A6”的段落
+    expected: 目标文档打开，并定位到包含 DOCS-FEATURE-SIDEBAR-LOCATE-F0A6 的段落
+    input_materials:
+      - path: "{{ASSETS_DIR}}/docs-feature-material.md"
+        label: docs-feature-material.md
+    allowed_actions: [click, type_text, hotkey, wait, scroll]
+    verification:
+      method: final_visual_semantic
+      assertion: 当前页面是“CUA-Lark Docs 测试文档 DOCS-P2-001”，正文可见“DOCS-FEATURE-SIDEBAR-LOCATE-F0A6”
+
+  - id: DOCS-FEAT-COMP-001
+    phase: phase-2
+    test_stage: docs_realistic_composition
+    product: Docs
+    name: 在锚点后插入三列表格
+    instruction: 打开“CUA-Lark Docs 测试文档 DOCS-P2-001”，找到“DOCS-FEATURE-TABLE-ANCHOR-3C2A”，在它后面插入一个三列两行以上的表格，表头为“事项、负责人、状态”，并在下一行数据行填入“素材复核、测试扩展、完成”。表头和数据必须在不同表格行，中间要有可见横向行边界；如果看到“事项/素材复核”“负责人/测试扩展”“状态/完成”上下堆在同一批单元格里，下面还有空行，这不是通过，必须修复。
+    expected: 指定锚点后出现包含表头和数据的真实表格，表头行与数据行由横向网格线分隔
+    input_materials:
+      - path: "{{ASSETS_DIR}}/docs-feature-material.md"
+        label: docs-feature-material.md
+    allowed_actions: [click, type_text, hotkey, wait, scroll]
+    verification:
+      method: final_visual_semantic
+      assertion: “DOCS-FEATURE-TABLE-ANCHOR-3C2A”后可见表格网格或表格结构，且同一表格内可见“事项”“负责人”“状态”“素材复核”“测试扩展”“完成”；“事项/负责人/状态”必须在表头行，“素材复核/测试扩展/完成”必须在下一行数据行，两行之间必须有可见横向网格线；如果这些文字只是上下堆在同一批单元格中且下方为空行，则判为失败
+
+  - id: DOCS-FEAT-COMP-002
+    phase: phase-2
+    test_stage: docs_realistic_composition
+    product: Docs
+    name: 创建待办清单并勾选一项
+    instruction: 打开“CUA-Lark Docs 测试文档 DOCS-P2-001”，在“DOCS-FEATURE-CHECKLIST-ANCHOR-4E8D”后创建待办清单，包含“DOCS-FEATURE-CHECKLIST-DONE-4E8D”和“DOCS-FEATURE-CHECKLIST-TODO-4E8D”，并把第一项标为已完成
+    expected: 锚点后出现两项待办清单，第一项为已完成状态，第二项仍未完成
+    input_materials:
+      - path: "{{ASSETS_DIR}}/docs-feature-material.md"
+        label: docs-feature-material.md
+    allowed_actions: [click, type_text, hotkey, wait, scroll]
+    verification:
+      method: final_visual_semantic
+      assertion: 可见“DOCS-FEATURE-CHECKLIST-DONE-4E8D”和“DOCS-FEATURE-CHECKLIST-TODO-4E8D”，两者呈现为待办/复选框列表，且第一项显示已勾选或完成样式
+
+  - id: DOCS-FEAT-COMP-003
+    phase: phase-2
+    test_stage: docs_realistic_composition
+    product: Docs
+    name: 插入分割线分隔两段
+    instruction: 打开“CUA-Lark Docs 测试文档 DOCS-P2-001”，在“DOCS-FEATURE-DIVIDER-BEFORE-6B70”和“DOCS-FEATURE-DIVIDER-AFTER-6B70”之间插入一条分割线
+    expected: 两个锚点之间可见水平分割线
+    input_materials:
+      - path: "{{ASSETS_DIR}}/docs-feature-material.md"
+        label: docs-feature-material.md
+    allowed_actions: [click, double_click, type_text, hotkey, wait, scroll]
+    verification:
+      method: final_visual_semantic
+      assertion: “DOCS-FEATURE-DIVIDER-BEFORE-6B70”和“DOCS-FEATURE-DIVIDER-AFTER-6B70”之间可见一条横向分割线或明显的分隔结构
+
+  - id: DOCS-FEAT-COMP-004
+    phase: phase-2
+    test_stage: docs_realistic_composition
+    product: Docs
+    name: 给局部文本添加链接
+    instruction: 打开“CUA-Lark Docs 测试文档 DOCS-P2-001”，把文本“DOCS-FEATURE-LINK-TARGET-8A41”设置为链接，链接地址使用“https://example.com/docs-feature-link-8a41”
+    expected: 指定文本保留并呈现为链接样式
+    input_materials:
+      - path: "{{ASSETS_DIR}}/docs-feature-material.md"
+        label: docs-feature-material.md
+    allowed_actions: [click, drag, type_text, hotkey, wait, scroll]
+    verification:
+      method: final_visual_semantic
+      assertion: 文档正文中“DOCS-FEATURE-LINK-TARGET-8A41”可见，且呈现为可点击链接样式或打开链接浮层时显示“example.com/docs-feature-link-8a41”
+
+  - id: DOCS-FEAT-COMP-005
+    phase: phase-2
+    test_stage: docs_realistic_composition
+    product: Docs
+    name: 对选中文本添加评论
+    instruction: 打开“CUA-Lark Docs 测试文档 DOCS-P2-001”，选中“DOCS-FEATURE-COMMENT-TARGET-5F19”，给它添加评论“DOCS-FEATURE-COMMENT-NOTE-5F19：请二次复核”
+    expected: 指定文本旁出现评论或批注入口，评论内容可见或可打开查看
+    input_materials:
+      - path: "{{ASSETS_DIR}}/docs-feature-material.md"
+        label: docs-feature-material.md
+    allowed_actions: [click, drag, type_text, hotkey, wait, scroll]
+    verification:
+      method: final_visual_semantic
+      assertion: “DOCS-FEATURE-COMMENT-TARGET-5F19”旁可见评论标记、评论侧栏或批注入口，并可见“DOCS-FEATURE-COMMENT-NOTE-5F19：请二次复核”
+
+  - id: DOCS-FEAT-COMP-006
+    phase: phase-2
+    test_stage: docs_realistic_composition
+    product: Docs
+    name: 复制粘贴文档内局部文本
+    instruction: 打开“CUA-Lark Docs 测试文档 DOCS-P2-001”，复制只包含“DOCS-FEATURE-COPY-SOURCE-2D91”的那一行，把它粘贴到“DOCS-FEATURE-COPY-DEST-2D91”后面，并保留原来源行
+    expected: 目标锚点后出现复制来的那一行，来源行仍存在
+    input_materials:
+      - path: "{{ASSETS_DIR}}/docs-feature-material.md"
+        label: docs-feature-material.md
+    allowed_actions: [click, drag, type_text, hotkey, wait, scroll]
+    verification:
+      method: final_visual_semantic
+      assertion: 文档中来源位置仍可见“DOCS-FEATURE-COPY-SOURCE-2D91”，且“DOCS-FEATURE-COPY-DEST-2D91”后也可见一份“DOCS-FEATURE-COPY-SOURCE-2D91”
+
+  - id: DOCS-FEAT-COMP-007
+    phase: phase-2
+    test_stage: docs_realistic_composition
+    product: Docs
+    name: 移动段落到另一段之前
+    instruction: 打开“CUA-Lark Docs 测试文档 DOCS-P2-001”，把整段“DOCS-FEATURE-MOVE-SOURCE-9E34：需要移动到目标前”移动到“DOCS-FEATURE-MOVE-TARGET-9E34：目标段落”之前
+    expected: 来源段落最终位于目标段落之前，且没有重复残留
+    input_materials:
+      - path: "{{ASSETS_DIR}}/docs-feature-material.md"
+        label: docs-feature-material.md
+    allowed_actions: [click, drag, type_text, hotkey, wait, scroll]
+    verification:
+      method: final_visual_semantic
+      assertion: 可见“DOCS-FEATURE-MOVE-SOURCE-9E34：需要移动到目标前”紧邻或明显位于“DOCS-FEATURE-MOVE-TARGET-9E34：目标段落”之前，来源段没有在原位置重复出现
+
+  - id: DOCS-FEAT-COMP-008
+    phase: phase-2
+    test_stage: docs_realistic_composition
+    product: Docs
+    name: 只格式化句中局部短语
+    instruction: 打开“CUA-Lark Docs 测试文档 DOCS-P2-001”，在包含“DOCS-FEATURE-PARTIAL-FMT-7C66”的句子里，只把短语“局部高亮词-7C66”设置为高亮或加粗，不要改变同一句其他文字样式
+    expected: 只有指定短语呈现高亮或加粗样式，同句锚点仍为普通样式
+    input_materials:
+      - path: "{{ASSETS_DIR}}/docs-feature-material.md"
+        label: docs-feature-material.md
+    allowed_actions: [click, drag, type_text, hotkey, wait, scroll]
+    verification:
+      method: final_visual_semantic
+      assertion: 同一句中可见“DOCS-FEATURE-PARTIAL-FMT-7C66”和“局部高亮词-7C66”，且只有“局部高亮词-7C66”呈现高亮或加粗等局部格式
+
+  - id: DOCS-FEAT-COMP-009
+    phase: phase-2
+    test_stage: docs_realistic_composition
+    product: Docs
+    name: 搜索定位后编辑目标段
+    instruction: 打开“CUA-Lark Docs 测试文档 DOCS-P2-001”，搜索“DOCS-FEATURE-SEARCH-EDIT-0A52”，定位后在该段末尾追加“DOCS-FEATURE-SEARCH-EDIT-DONE-0A52”
+    expected: 搜索到的目标段末尾出现追加标记
+    input_materials:
+      - path: "{{ASSETS_DIR}}/docs-feature-material.md"
+        label: docs-feature-material.md
+    allowed_actions: [click, type_text, hotkey, wait, scroll]
+    verification:
+      method: final_visual_semantic
+      assertion: 当前可见区域包含“DOCS-FEATURE-SEARCH-EDIT-0A52”，且同段或其后紧邻位置可见“DOCS-FEATURE-SEARCH-EDIT-DONE-0A52”
+
+  - id: DOCS-FEAT-COMP-010
+    phase: phase-2
+    test_stage: docs_realistic_composition
+    product: Docs
+    name: 滚动定位后编辑深层目标
+    instruction: 打开“CUA-Lark Docs 测试文档 DOCS-P2-001”，滚动到“DOCS-FEATURE-SCROLL-EDIT-B13D”，在该段后新增“DOCS-FEATURE-SCROLL-EDIT-DONE-B13D：滚动后编辑成功”
+    expected: 深层滚动目标后出现新增文本
+    input_materials:
+      - path: "{{ASSETS_DIR}}/docs-feature-material.md"
+        label: docs-feature-material.md
+    allowed_actions: [click, type_text, hotkey, wait, scroll]
+    verification:
+      method: final_visual_semantic
+      assertion: 当前可见正文中“DOCS-FEATURE-SCROLL-EDIT-B13D”后可见“DOCS-FEATURE-SCROLL-EDIT-DONE-B13D：滚动后编辑成功”
+
+  - id: DOCS-FEAT-COMP-011
+    phase: phase-2
+    test_stage: docs_realistic_composition
+    product: Docs
+    name: 新建标题并用目录定位
+    instruction: 打开“CUA-Lark Docs 测试文档 DOCS-P2-001”，在“DOCS-FEATURE-HEADING-TOC-ANCHOR-A0D8”后新增二级标题“DOCS-FEATURE-HEADING-TOC-NEW-A0D8”，然后借助文档目录定位到这个新标题
+    expected: 新标题呈现为标题样式，并可通过目录回到该标题位置
+    input_materials:
+      - path: "{{ASSETS_DIR}}/docs-feature-material.md"
+        label: docs-feature-material.md
+    allowed_actions: [click, type_text, hotkey, wait, scroll]
+    verification:
+      method: final_visual_semantic
+      assertion: 当前正文可见“DOCS-FEATURE-HEADING-TOC-NEW-A0D8”，它呈现为标题样式；目录或大纲中也可见该标题，或视图已通过目录定位回该标题附近
+
+  - id: DOCS-FEAT-COMP-012
+    phase: phase-2
+    test_stage: docs_realistic_composition
+    product: Docs
+    name: 创建嵌套列表
+    instruction: 打开“CUA-Lark Docs 测试文档 DOCS-P2-001”，在“DOCS-FEATURE-NESTED-LIST-ANCHOR-1B6E”后创建嵌套列表：一级项“DOCS-FEATURE-NESTED-PARENT-1B6E”，其下包含二级项“DOCS-FEATURE-NESTED-CHILD-1B6E”
+    expected: 锚点后出现有缩进层级的嵌套列表
+    input_materials:
+      - path: "{{ASSETS_DIR}}/docs-feature-material.md"
+        label: docs-feature-material.md
+    allowed_actions: [click, type_text, hotkey, wait, scroll]
+    verification:
+      method: final_visual_semantic
+      assertion: 可见“DOCS-FEATURE-NESTED-PARENT-1B6E”和“DOCS-FEATURE-NESTED-CHILD-1B6E”，且子项相对父项有明显缩进或二级列表结构
+
+  - id: DOCS-FEAT-COMP-013
+    phase: phase-2
+    test_stage: docs_realistic_composition
+    product: Docs
+    name: 插入任务列表并保留未完成项
+    instruction: 打开“CUA-Lark Docs 测试文档 DOCS-P2-001”，在“DOCS-FEATURE-TASKLIST-ANCHOR-3D49”后插入任务列表，包含“DOCS-FEATURE-TASKLIST-OPEN-3D49：待确认”和“DOCS-FEATURE-TASKLIST-DONE-3D49：已确认”，并把已确认项标为完成
+    expected: 锚点后出现任务列表，一项未完成，一项已完成
+    input_materials:
+      - path: "{{ASSETS_DIR}}/docs-feature-material.md"
+        label: docs-feature-material.md
+    allowed_actions: [click, type_text, hotkey, wait, scroll]
+    verification:
+      method: final_visual_semantic
+      assertion: 两个任务列表项均可见，“DOCS-FEATURE-TASKLIST-OPEN-3D49”未勾选，“DOCS-FEATURE-TASKLIST-DONE-3D49”显示勾选或完成样式
+
+  - id: DOCS-FEAT-COMP-014
+    phase: phase-2
+    test_stage: docs_realistic_composition
+    product: Docs
+    name: 从本地 Markdown 局部复制粘贴议程
+    instruction: 打开“CUA-Lark Docs 测试文档 DOCS-P2-001”，从本地 Markdown 素材中读取“DOCS-FEATURE-LOCAL-MD-SNIPPET-START-58AF”和“DOCS-FEATURE-LOCAL-MD-SNIPPET-END-58AF”之间的议程片段，并在“DOCS-FEATURE-LOCAL-MD-PASTE-ANCHOR-58AF”后导入为飞书文档结构：标题“DOCS-FEATURE-LOCAL-MD-AGENDA-58AF”应呈现为标题样式，三条议程“同步目标”“确认风险”“输出结论”应呈现为项目符号列表。不要把 Markdown 源码、START/END 标记或整份素材原样粘贴进去；如果先粘贴出了 raw Markdown，应清理后重建为结构化结果。
+    expected: 指定锚点后出现渲染后的标题和项目符号议程列表，且没有 raw Markdown 标记、START/END 标记或整份素材粘贴残留
+    input_materials:
+      - path: "{{ASSETS_DIR}}/docs-feature-material.md"
+        label: docs-feature-material.md
+    allowed_actions: [click, type_text, hotkey, wait, scroll]
+    verification:
+      method: final_visual_semantic
+      assertion: “DOCS-FEATURE-LOCAL-MD-PASTE-ANCHOR-58AF”后可见标题样式的“DOCS-FEATURE-LOCAL-MD-AGENDA-58AF”，其下可见项目符号列表条目“同步目标”“确认风险”“输出结论”；该目标结果附近不得出现 raw Markdown 标记“###”、普通文本列表前缀“- ”、孤立标点行“。”、START/END 标记或整份素材根标识“DOCS-FEATURE-MATERIAL-ROOT-7A2D”；不得把下方原素材区中的同名片段当成完成证据
+
+  - id: DOCS-FEAT-COMP-015
+    phase: phase-2
+    test_stage: docs_realistic_composition
+    product: Docs
+    name: 从本地 Markdown 局部复制粘贴表格
+    instruction: 打开“CUA-Lark Docs 测试文档 DOCS-P2-001”，从本地 Markdown 素材中读取“DOCS-FEATURE-LOCAL-TABLE-START-0F27”和“DOCS-FEATURE-LOCAL-TABLE-END-0F27”之间的小表格，并在“DOCS-FEATURE-LOCAL-TABLE-PASTE-0F27”后导入为真实飞书表格或清晰的表格化块：表头为“阶段、动作、验收”，数据行包含“准备、局部粘贴、可见”和“收尾、风险标注、完成”。不要只粘贴 Markdown pipe table 源码；如果 pipe table 没有渲染成表格，应使用飞书表格/块控件重建。
+    expected: 指定锚点后出现真实表格网格或清晰的飞书表格化块，且没有 literal Markdown pipe table 源码残留
+    input_materials:
+      - path: "{{ASSETS_DIR}}/docs-feature-material.md"
+        label: docs-feature-material.md
+    allowed_actions: [click, type_text, hotkey, wait, scroll]
+    verification:
+      method: final_visual_semantic
+      assertion: “DOCS-FEATURE-LOCAL-TABLE-PASTE-0F27”后可见真实表格网格、表格块或明显按列对齐的飞书表格化结构，同一结构内包含“阶段”“动作”“验收”“准备”“局部粘贴”“可见”“收尾”“风险标注”“完成”；不得只有 literal Markdown pipe table 文本，例如“| 阶段 | 动作 | 验收 |”或“| --- | --- | --- |”；不得把下方原素材区中的同名表格当成完成证据

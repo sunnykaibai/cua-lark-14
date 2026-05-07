@@ -1,0 +1,97 @@
+# Docs end-to-end demo suite.
+# Purpose: provide a stable showcase path from document creation/opening to
+# visible writing, structure, sharing, and conservative edits. It intentionally
+# avoids currently quarantined hard paths such as real table construction and
+# Markdown-to-Docs structure conversion.
+
+test_stages:
+  - id: docs_demo_e2e
+    order: 1
+    name: Docs 稳定端到端 Demo
+    description: 覆盖官方核心要求：创建文档、编辑文本内容、插入标题/列表、分享文档，并展示待办清单、分割线和评论等协作动作
+    cases:
+      - DOCS-DEMO-E2E-001
+      - DOCS-DEMO-E2E-002
+      - DOCS-DEMO-E2E-003
+      - DOCS-DEMO-E2E-004
+      - DOCS-DEMO-E2E-005
+      - DOCS-DEMO-E2E-006
+      - DOCS-DEMO-E2E-007
+
+test_cases:
+  - id: DOCS-DEMO-E2E-001
+    phase: demo
+    test_stage: docs_demo_e2e
+    product: Docs
+    name: 创建协作记录文档并写入背景
+    instruction: 在飞书云文档中新建一个文档，标题设为“孙浩翔协作记录 - CUA-Lark Docs Demo 20260506”，并在正文写入五段内容：“DOCS-DEMO-ROOT-20260506：和孙浩翔同步 CUA-Lark Docs 自动化测试进展，记录本轮 Demo 的关键结论和后续安排”、“DOCS-DEMO-STATUS-20260506：当前状态待补充，准备把稳定能力整理成一份可分享的协作记录”、“DOCS-DEMO-FOCUS-20260506：本次演示的关键结论是稳定演示链路”、“DOCS-DEMO-DIVIDER-BEFORE-20260506：以上是本轮同步背景”、“DOCS-DEMO-DIVIDER-AFTER-20260506：以下是阶段成果和后续行动”
+    expected: 当前页面打开“孙浩翔协作记录 - CUA-Lark Docs Demo 20260506”，正文出现五段 Demo 背景内容
+    verification:
+      method: final_visual_semantic
+      assertion: 文档标题为“孙浩翔协作记录 - CUA-Lark Docs Demo 20260506”或页面明确打开该文档，正文可见“DOCS-DEMO-ROOT-20260506”“DOCS-DEMO-STATUS-20260506”“DOCS-DEMO-FOCUS-20260506”“DOCS-DEMO-DIVIDER-BEFORE-20260506”“DOCS-DEMO-DIVIDER-AFTER-20260506”，且这些内容在正文区域而不是只在标题或搜索框中
+
+  - id: DOCS-DEMO-E2E-002
+    phase: demo
+    test_stage: docs_demo_e2e
+    product: Docs
+    name: 搜索定位后补充当前状态
+    instruction: 打开“孙浩翔协作记录 - CUA-Lark Docs Demo 20260506”，搜索或定位到“DOCS-DEMO-STATUS-20260506：当前状态待补充”，在该段下方另起一行写入“DOCS-DEMO-STATUS-DONE-20260506：Layer6 R4 关键问题已复盘，Demo 进入稳定协作流程”
+    expected: 状态段下方出现新增的进展结论
+    verification:
+      method: final_visual_semantic
+      assertion: 当前文档是“孙浩翔协作记录 - CUA-Lark Docs Demo 20260506”，正文可见“DOCS-DEMO-STATUS-20260506：当前状态待补充”，且其下方另起一行出现“DOCS-DEMO-STATUS-DONE-20260506：Layer6 R4 关键问题已复盘，Demo 进入稳定协作流程”；原状态行文字不能被截断，不能把句号或其他标点单独挪到新增行
+
+  - id: DOCS-DEMO-E2E-003
+    phase: demo
+    test_stage: docs_demo_e2e
+    product: Docs
+    name: 插入阶段小节标题和成果列表
+    instruction: 打开“孙浩翔协作记录 - CUA-Lark Docs Demo 20260506”，在正文末尾插入一个独立小节标题行“DOCS-DEMO-HEADING-20260506 阶段成果”，并在标题下方插入项目符号列表，列表项为“DOCS-DEMO-BULLET-ONE-20260506：完成协作记录文档创建”“DOCS-DEMO-BULLET-TWO-20260506：补充测试进展和关键结论”“DOCS-DEMO-BULLET-THREE-20260506：准备分享给孙浩翔继续确认”
+    expected: 正文末尾出现独立的阶段成果小节标题行，并在其下方出现三项项目符号列表
+    verification:
+      method: final_visual_semantic
+      assertion: 正文可见独立成行的“DOCS-DEMO-HEADING-20260506 阶段成果”；其下方可见包含“DOCS-DEMO-BULLET-ONE-20260506”“DOCS-DEMO-BULLET-TWO-20260506”“DOCS-DEMO-BULLET-THREE-20260506”的项目符号列表，三项都必须带有项目符号或明显列表缩进
+
+  - id: DOCS-DEMO-E2E-004
+    phase: demo
+    test_stage: docs_demo_e2e
+    product: Docs
+    name: 新增后续行动待办
+    instruction: 打开“孙浩翔协作记录 - CUA-Lark Docs Demo 20260506”，在正文末尾新增两项待办清单：“DOCS-DEMO-TODO-DONE-20260506：整理 Demo 展示文档”和“DOCS-DEMO-TODO-TODO-20260506：和孙浩翔确认日历提醒时间”，并把第一项标为已完成，第二项保持未完成
+    expected: 正文末尾出现两项待办清单，第一项已完成，第二项未完成
+    verification:
+      method: final_visual_semantic
+      assertion: 正文可见“DOCS-DEMO-TODO-DONE-20260506：整理 Demo 展示文档”和“DOCS-DEMO-TODO-TODO-20260506：和孙浩翔确认日历提醒时间”，两者呈现为待办/复选框列表，第一项显示勾选、划线或完成状态，第二项未勾选；不能把待办任务误做成分割线、普通项目符号列表或普通文本
+
+  - id: DOCS-DEMO-E2E-005
+    phase: demo
+    test_stage: docs_demo_e2e
+    product: Docs
+    name: 插入分割线区分背景和行动
+    instruction: 打开“孙浩翔协作记录 - CUA-Lark Docs Demo 20260506”，在“DOCS-DEMO-DIVIDER-BEFORE-20260506”和“DOCS-DEMO-DIVIDER-AFTER-20260506”之间插入一条分割线
+    expected: 两个 Demo 分割线锚点之间出现横向分割线
+    verification:
+      method: final_visual_semantic
+      assertion: “DOCS-DEMO-DIVIDER-BEFORE-20260506”和“DOCS-DEMO-DIVIDER-AFTER-20260506”之间可见一条横向分割线或明显分隔结构，且不是普通文本“---”或“/分割线”残留
+
+  - id: DOCS-DEMO-E2E-006
+    phase: demo
+    test_stage: docs_demo_e2e
+    product: Docs
+    name: 给后续行动添加评论
+    instruction: 打开“孙浩翔协作记录 - CUA-Lark Docs Demo 20260506”，选中“DOCS-DEMO-TODO-TODO-20260506”，给它添加评论“DOCS-DEMO-COMMENT-20260506：请孙浩翔确认会议时间”
+    expected: 指定文本旁出现评论或批注入口，评论内容可见或可打开查看
+    verification:
+      method: final_visual_semantic
+      assertion: “DOCS-DEMO-TODO-TODO-20260506”旁可见评论标记、评论侧栏或批注入口，并可见“DOCS-DEMO-COMMENT-20260506：请孙浩翔确认会议时间”
+
+  - id: DOCS-DEMO-E2E-007
+    phase: demo
+    test_stage: docs_demo_e2e
+    product: Docs
+    name: 分享 Demo 文档
+    instruction: 把当前“孙浩翔协作记录 - CUA-Lark Docs Demo 20260506”分享给孙浩翔；如果分享或权限界面中已经能看到孙浩翔拥有访问权限，直接完成，不要重复添加
+    expected: 分享弹窗或文档权限界面显示孙浩翔已被添加，或出现已发送、已分享、已获得访问权限等成功状态
+    verification:
+      method: final_visual_semantic
+      assertion: 当前文档是“孙浩翔协作记录 - CUA-Lark Docs Demo 20260506”，分享流程显示孙浩翔已被添加、已发送邀请、已分享或已获得访问权限；不得只是复制链接或停留在普通正文编辑状态

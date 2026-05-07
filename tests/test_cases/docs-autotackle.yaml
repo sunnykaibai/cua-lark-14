@@ -1,0 +1,196 @@
+# Docs auto-tackle expansion cases
+# 设计目标：
+# 1. 扩展 Docs 入口鲁棒性与 Markdown 导入/粘贴覆盖，不替换 phase2-docs.yaml
+# 2. instruction 只描述真实用户目标，不包含坐标、UI 方位或验收话术
+# 3. 执行仍走可见 GUI 与 VLM grounding；expected/assertion 仅用于最终验证与报告
+
+test_stages:
+  - id: docs_entry_provision
+    order: 0
+    name: Docs 入口目标文档准备
+    description: 确认入口鲁棒性测试专用目标文档已经存在并可打开，供后续入口用例搜索和打开；正式 Layer 1 回归不重复执行本 stage。
+    cases:
+      - DOCS-ENTRY-PROVISION-001
+  - id: docs_entry_robustness
+    order: 1
+    name: Docs 入口鲁棒性
+    description: 从飞书 IM/桌面、云文档首页、非目标文档编辑页、浏览器 Docs 首页/最近/搜索页、目标文档已打开、遮挡态等起点打开指定入口测试文档。
+    cases:
+      - DOCS-ENTRY-001
+      - DOCS-ENTRY-002
+      - DOCS-ENTRY-003
+      - DOCS-ENTRY-004
+      - DOCS-ENTRY-005
+      - DOCS-ENTRY-006
+  - id: docs_markdown_import
+    order: 2
+    name: Markdown 导入与粘贴
+    description: 使用本地 Markdown 素材，通过可见 Docs 编辑器把内容追加到目标文档正文末尾，并保留关键结构文本。
+    cases:
+      - DOCS-MD-001
+      - DOCS-MD-002
+      - DOCS-MD-003
+      - DOCS-MD-004
+
+test_cases:
+  - id: DOCS-ENTRY-PROVISION-001
+    phase: phase-2
+    test_stage: docs_entry_provision
+    product: Docs
+    name: 确认入口目标文档存在
+    instruction: 确认飞书云文档中已经存在并打开“CUA-Lark Docs 入口鲁棒性测试文档 DOCS-ENTRY-TARGET”。这是入口鲁棒性测试的夹具确认步骤，不要新建文档；如果当前已经打开该目标文档，直接完成；如果当前在云文档首页或列表页，优先从最近文档、侧栏或搜索完整标题打开它。
+    expected: 当前界面打开标题为“CUA-Lark Docs 入口鲁棒性测试文档 DOCS-ENTRY-TARGET”的飞书云文档
+    allowed_actions: [click, double_click, type_text, hotkey, wait, scroll]
+    verification:
+      method: final_visual_semantic
+      assertion: 当前页面是飞书云文档编辑或阅读页，文档标题或主标题显示“CUA-Lark Docs 入口鲁棒性测试文档 DOCS-ENTRY-TARGET”
+
+  - id: DOCS-ENTRY-001
+    phase: phase-2
+    test_stage: docs_entry_robustness
+    product: Docs
+    name: 从飞书当前界面打开指定文档
+    instruction: 从当前飞书界面打开“CUA-Lark Docs 入口鲁棒性测试文档 DOCS-ENTRY-TARGET”
+    expected: 当前界面打开名为“CUA-Lark Docs 入口鲁棒性测试文档 DOCS-ENTRY-TARGET”的云文档
+    setup_instruction: 前提：目标文档“CUA-Lark Docs 入口鲁棒性测试文档 DOCS-ENTRY-TARGET”已经存在。不要新建目标文档。请离开当前目标文档编辑页，回到飞书云文档首页、飞书云文档列表页、飞书桌面端首页或消息页中的任意一个可见飞书界面，作为入口测试起点；不要反复点击同一个菜单按钮。
+    setup_expected: 当前界面是飞书或飞书云文档的非目标文档编辑页，目标文档已经存在但没有打开在主内容区。
+    setup_max_steps: 6
+    allowed_actions: [click, type_text, hotkey, wait, scroll]
+    verification:
+      method: final_visual_semantic
+      assertion: 当前页面是飞书云文档编辑页，文档标题或主标题显示“CUA-Lark Docs 入口鲁棒性测试文档 DOCS-ENTRY-TARGET”
+
+  - id: DOCS-ENTRY-002
+    phase: phase-2
+    test_stage: docs_entry_robustness
+    product: Docs
+    name: 从云文档首页打开指定文档
+    instruction: 在飞书云文档首页打开“CUA-Lark Docs 入口鲁棒性测试文档 DOCS-ENTRY-TARGET”
+    expected: 当前界面打开名为“CUA-Lark Docs 入口鲁棒性测试文档 DOCS-ENTRY-TARGET”的云文档
+    setup_instruction: 前提：目标文档“CUA-Lark Docs 入口鲁棒性测试文档 DOCS-ENTRY-TARGET”已经存在。不要新建目标文档。请回到飞书云文档首页或最近文档首页，不要停留在目标文档编辑页。
+    setup_expected: 当前界面是飞书云文档首页或最近文档首页，目标文档已经存在但当前主内容区不是目标文档编辑页。
+    setup_max_steps: 10
+    allowed_actions: [click, type_text, hotkey, wait, scroll]
+    verification:
+      method: final_visual_semantic
+      assertion: 当前页面是飞书云文档编辑页，文档标题或主标题显示“CUA-Lark Docs 入口鲁棒性测试文档 DOCS-ENTRY-TARGET”
+
+  - id: DOCS-ENTRY-003
+    phase: phase-2
+    test_stage: docs_entry_robustness
+    product: Docs
+    name: 从非目标文档切换到指定文档
+    instruction: 从当前已经打开的另一个飞书云文档编辑页，切换到“CUA-Lark Docs 入口鲁棒性测试文档 DOCS-ENTRY-TARGET”
+    expected: 当前界面不再停留在原文档，而是打开“CUA-Lark Docs 入口鲁棒性测试文档 DOCS-ENTRY-TARGET”
+    setup_instruction: 前提：目标文档“CUA-Lark Docs 入口鲁棒性测试文档 DOCS-ENTRY-TARGET”和非目标夹具文档“CUA-Lark Docs 入口鲁棒性非目标文档 DOCS-ENTRY-DECOY”都已经存在。不要新建任何文档，不要点击新建、创建、加号或模板库。如果当前已经打开目标文档或其他文档，请先通过左上角飞书云文档首页/面包屑入口回到云文档首页或列表页，不要使用文档编辑页右上角放大镜作为主要入口；然后从云文档首页、最近文档、侧栏或云文档内容搜索完整标题打开已有的“CUA-Lark Docs 入口鲁棒性非目标文档 DOCS-ENTRY-DECOY”，并停留在这个非目标文档编辑页。
+    setup_expected: 当前打开的是已有的“CUA-Lark Docs 入口鲁棒性非目标文档 DOCS-ENTRY-DECOY”云文档编辑页，而不是目标文档；过程中没有新建空白文档。
+    setup_max_steps: 12
+    allowed_actions: [click, type_text, hotkey, wait, scroll]
+    verification:
+      method: final_visual_semantic
+      assertion: 当前文档标题或页面主标题显示“CUA-Lark Docs 入口鲁棒性测试文档 DOCS-ENTRY-TARGET”，且不是其他文档的编辑页
+
+  - id: DOCS-ENTRY-004
+    phase: phase-2
+    test_stage: docs_entry_robustness
+    product: Docs
+    name: 从浏览器 Docs 页面打开指定文档
+    instruction: 在当前浏览器里的飞书云文档首页、最近文档页或搜索页中，打开“CUA-Lark Docs 入口鲁棒性测试文档 DOCS-ENTRY-TARGET”
+    expected: 当前浏览器飞书 Docs 页面显示“CUA-Lark Docs 入口鲁棒性测试文档 DOCS-ENTRY-TARGET”
+    setup_instruction: 前提：目标文档“CUA-Lark Docs 入口鲁棒性测试文档 DOCS-ENTRY-TARGET”已经存在。不要新建目标文档。请切到浏览器承载的飞书云文档首页、最近文档页或搜索页，不要停留在任何文档编辑页。
+    setup_expected: 当前可见界面是浏览器中的飞书云文档首页、最近文档页或搜索页，主内容区不是目标文档编辑页。
+    setup_max_steps: 12
+    allowed_actions: [click, type_text, hotkey, wait, scroll]
+    verification:
+      method: final_visual_semantic
+      assertion: 当前可见的浏览器飞书云文档页面显示目标文档“CUA-Lark Docs 入口鲁棒性测试文档 DOCS-ENTRY-TARGET”，且主要内容区是 Docs 文档编辑或阅读界面
+
+  - id: DOCS-ENTRY-005
+    phase: phase-2
+    test_stage: docs_entry_robustness
+    product: Docs
+    name: 目标文档已打开时保持在指定文档
+    instruction: 继续使用当前已打开的“CUA-Lark Docs 入口鲁棒性测试文档 DOCS-ENTRY-TARGET”
+    expected: 当前界面保持在“CUA-Lark Docs 入口鲁棒性测试文档 DOCS-ENTRY-TARGET”，没有新建或切换到其他文档
+    setup_instruction: 前提：目标文档“CUA-Lark Docs 入口鲁棒性测试文档 DOCS-ENTRY-TARGET”已经存在。请打开这个目标文档，停留在目标文档的编辑或阅读页面。
+    setup_expected: 当前页面已经显示目标文档“CUA-Lark Docs 入口鲁棒性测试文档 DOCS-ENTRY-TARGET”。
+    setup_max_steps: 10
+    allowed_actions: [click, hotkey, wait, scroll]
+    verification:
+      method: final_visual_semantic
+      assertion: 当前页面仍显示“CUA-Lark Docs 入口鲁棒性测试文档 DOCS-ENTRY-TARGET”，没有打开新建文档页、其他文档或无关应用界面
+
+  - id: DOCS-ENTRY-006
+    phase: phase-2
+    test_stage: docs_entry_robustness
+    product: Docs
+    name: 遮挡态下恢复并打开指定文档
+    instruction: 从当前界面恢复到可操作的飞书云文档内容，并打开“CUA-Lark Docs 入口鲁棒性测试文档 DOCS-ENTRY-TARGET”
+    expected: 当前界面回到可操作的飞书云文档内容区，目标文档“CUA-Lark Docs 入口鲁棒性测试文档 DOCS-ENTRY-TARGET”处于可见状态
+    setup_instruction: 前提：目标文档“CUA-Lark Docs 入口鲁棒性测试文档 DOCS-ENTRY-TARGET”已经存在。请打开这个目标文档，然后打开一个会遮挡文档内容的真实飞书云文档浮层，例如分享弹窗、搜索框、更多菜单或权限面板，停留在遮挡态。
+    setup_expected: 当前界面显示目标文档，同时有真实弹窗、菜单、搜索框或权限面板遮挡文档内容区。
+    setup_max_steps: 12
+    allowed_actions: [click, type_text, hotkey, wait, scroll]
+    verification:
+      method: final_visual_semantic
+      assertion: 当前主要内容区显示目标文档“CUA-Lark Docs 入口鲁棒性测试文档 DOCS-ENTRY-TARGET”，且没有无关弹窗、菜单或权限面板遮挡文档正文
+
+  - id: DOCS-MD-001
+    phase: phase-2
+    test_stage: docs_markdown_import
+    product: Docs
+    name: 追加本地 Markdown 素材
+    instruction: 将本地 Markdown 素材文件“{{ASSETS_DIR}}/docs-md-import-sample.md”的内容追加到“CUA-Lark Docs 测试文档 DOCS-P2-001”的正文末尾
+    expected: 目标文档正文末尾出现 Markdown 素材内容，包含首尾标识和主要文本
+    input_materials:
+      - path: "{{ASSETS_DIR}}/docs-md-import-sample.md"
+        label: docs-md-import-sample.md
+    allowed_actions: [click, type_text, hotkey, wait, scroll]
+    verification:
+      method: final_visual_semantic
+      assertion: 当前文档正文区域显示素材内容，至少包含“DOCS-MD-IMPORT-BEGIN-8B4D”、“Markdown 导入视觉验证”和“DOCS-MD-IMPORT-END-2E6A”
+
+  - id: DOCS-MD-002
+    phase: phase-2
+    test_stage: docs_markdown_import
+    product: Docs
+    name: 保留 Markdown 标题与列表关键文本
+    instruction: 把本地 Markdown 素材文件“{{ASSETS_DIR}}/docs-md-import-sample.md”的内容加入“CUA-Lark Docs 测试文档 DOCS-P2-001”，保留素材里的标题、项目符号和编号列表文本
+    expected: 目标文档正文中可见素材标题、项目符号列表文本和编号列表文本
+    input_materials:
+      - path: "{{ASSETS_DIR}}/docs-md-import-sample.md"
+        label: docs-md-import-sample.md
+    allowed_actions: [click, type_text, hotkey, wait, scroll]
+    verification:
+      method: final_visual_semantic
+      assertion: 当前文档正文区域可见“Markdown 导入视觉验证”、“项目符号 alpha 视觉保留”、“项目符号 beta 结构保留”、“编号第一步：打开目标文档”和“编号第二步：追加素材内容”
+
+  - id: DOCS-MD-003
+    phase: phase-2
+    test_stage: docs_markdown_import
+    product: Docs
+    name: 追加包含首尾标识的多段素材
+    instruction: 将本地 Markdown 素材文件“{{ASSETS_DIR}}/docs-md-import-sample.md”的完整内容追加到“CUA-Lark Docs 测试文档 DOCS-P2-001”的正文末尾，素材的开头和结尾都要保留下来
+    expected: 目标文档正文末尾出现完整素材的开头标识、中间段落和结尾标识
+    input_materials:
+      - path: "{{ASSETS_DIR}}/docs-md-import-sample.md"
+        label: docs-md-import-sample.md
+    allowed_actions: [click, type_text, hotkey, wait, scroll]
+    verification:
+      method: final_visual_semantic
+      assertion: 当前文档正文区域能看到“DOCS-MD-IMPORT-BEGIN-8B4D”和“DOCS-MD-IMPORT-END-2E6A”，并且二者之间保留了素材正文或列表内容
+
+  - id: DOCS-MD-004
+    phase: phase-2
+    test_stage: docs_markdown_import
+    product: Docs
+    name: 脏内容下寻找空白位置追加素材
+    instruction: 在“CUA-Lark Docs 测试文档 DOCS-P2-001”已有内容后找到合适的空白位置，追加本地 Markdown 素材文件“{{ASSETS_DIR}}/docs-md-import-sample.md”的内容
+    expected: 新增 Markdown 素材出现在已有正文之后，没有覆盖或混入标题区域
+    input_materials:
+      - path: "{{ASSETS_DIR}}/docs-md-import-sample.md"
+        label: docs-md-import-sample.md
+    allowed_actions: [click, type_text, hotkey, wait, scroll]
+    verification:
+      method: final_visual_semantic
+      assertion: 当前文档正文区域在已有内容之后显示“DOCS-MD-IMPORT-BEGIN-8B4D”和“DOCS-MD-IMPORT-END-2E6A”，文档标题没有被素材文本污染

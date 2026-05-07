@@ -1,0 +1,136 @@
+# Phase 2 Docs Computer Use 测试用例
+# 设计目标：
+# 1. 所有 instruction 保持真实用户自然语言，只描述目标，不写固定坐标或内部验收步骤
+# 2. 覆盖 Docs 创建文档、编辑正文、插入标题/列表、分享文档四类核心能力
+# 3. 核心操作必须由 VLM 基于当前截图 grounding，不依赖固定坐标脚本
+
+test_stages:
+  - id: docs_create
+    order: 1
+    name: 创建文档
+    description: 验证从飞书进入云文档并创建新文档，能设置可识别标题。
+    cases: [DOCS-P2-001, DOCS-P2-002]
+  - id: docs_edit
+    order: 2
+    name: 编辑文本内容
+    description: 验证打开测试文档、聚焦正文编辑区并输入/修改文本内容。
+    cases: [DOCS-P2-003, DOCS-P2-004]
+  - id: docs_structure
+    order: 3
+    name: 插入标题与列表
+    description: 验证标题样式、项目符号列表、编号列表等文档结构化编辑能力。
+    cases: [DOCS-P2-005, DOCS-P2-006, DOCS-P2-007]
+  - id: docs_share
+    order: 4
+    name: 分享文档
+    description: 验证通过真实分享弹窗把当前文档分享给联系人。
+    cases: [DOCS-P2-008, DOCS-P2-009]
+
+test_cases:
+  - id: DOCS-P2-001
+    phase: phase-2
+    test_stage: docs_create
+    product: Docs
+    name: 创建测试文档并设置标题
+    instruction: 在飞书云文档中新建一个文档，标题设为“CUA-Lark Docs 测试文档 DOCS-P2-001”
+    expected: 当前云文档页面显示标题“CUA-Lark Docs 测试文档 DOCS-P2-001”
+    allowed_actions: [click, type_text, hotkey, wait, scroll]
+    verification:
+      method: final_visual_semantic
+      assertion: 当前页面是云文档编辑页，文档标题显示为“CUA-Lark Docs 测试文档 DOCS-P2-001”
+
+  - id: DOCS-P2-002
+    phase: phase-2
+    test_stage: docs_create
+    product: Docs
+    name: 搜索并打开测试文档
+    instruction: 在飞书云文档中搜索并打开“CUA-Lark Docs 测试文档 DOCS-P2-001”
+    expected: 打开名为“CUA-Lark Docs 测试文档 DOCS-P2-001”的文档
+    allowed_actions: [click, type_text, hotkey, wait, scroll]
+    verification:
+      method: final_visual_semantic
+      assertion: 当前文档标题或页面主标题显示“CUA-Lark Docs 测试文档 DOCS-P2-001”
+
+  - id: DOCS-P2-003
+    phase: phase-2
+    test_stage: docs_edit
+    product: Docs
+    name: 编辑正文短文本
+    instruction: 打开“CUA-Lark Docs 测试文档 DOCS-P2-001”，在正文末尾输入“DOCS-P2-003 正文编辑验证：这是 CUA-Lark Docs E2E 正文编辑测试”
+    expected: 文档正文中出现“DOCS-P2-003 正文编辑验证：这是 CUA-Lark Docs E2E 正文编辑测试”
+    allowed_actions: [click, type_text, hotkey, wait, scroll]
+    verification:
+      method: final_visual_semantic
+      assertion: 当前文档正文区域显示“DOCS-P2-003 正文编辑验证：这是 CUA-Lark Docs E2E 正文编辑测试”
+
+  - id: DOCS-P2-004
+    phase: phase-2
+    test_stage: docs_edit
+    product: Docs
+    name: 追加第二段正文
+    instruction: 在“CUA-Lark Docs 测试文档 DOCS-P2-001”的正文末尾另起一段，输入“DOCS-P2-004 第二段：CUA-Lark Docs 状态验证”
+    expected: 文档正文中新增一段“DOCS-P2-004 第二段：CUA-Lark Docs 状态验证”
+    allowed_actions: [click, type_text, hotkey, wait, scroll]
+    verification:
+      method: final_visual_semantic
+      assertion: 当前文档正文末尾出现“DOCS-P2-004 第二段：CUA-Lark Docs 状态验证”
+
+  - id: DOCS-P2-005
+    phase: phase-2
+    test_stage: docs_structure
+    product: Docs
+    name: 插入一级标题
+    instruction: 在“CUA-Lark Docs 测试文档 DOCS-P2-001”中插入一个一级标题“DOCS-P2-005 阶段进展”
+    expected: 文档中出现一级标题样式的“DOCS-P2-005 阶段进展”
+    allowed_actions: [click, type_text, hotkey, wait, scroll]
+    verification:
+      method: final_visual_semantic
+      assertion: 文档正文中出现“DOCS-P2-005 阶段进展”，且呈现为标题样式或位于标题结构中
+
+  - id: DOCS-P2-006
+    phase: phase-2
+    test_stage: docs_structure
+    product: Docs
+    name: 插入项目符号列表
+    instruction: 在“CUA-Lark Docs 测试文档 DOCS-P2-001”中插入项目符号列表，列表项是“DOCS-P2-006 视觉定位”“DOCS-P2-006 动作执行”“DOCS-P2-006 状态验证”
+    expected: 文档正文中出现包含“DOCS-P2-006 视觉定位”“DOCS-P2-006 动作执行”“DOCS-P2-006 状态验证”的项目符号列表
+    allowed_actions: [click, type_text, hotkey, wait, scroll]
+    verification:
+      method: final_visual_semantic
+      assertion: 文档中出现三项项目符号列表，内容分别包含 DOCS-P2-006 视觉定位、DOCS-P2-006 动作执行、DOCS-P2-006 状态验证
+
+  - id: DOCS-P2-007
+    phase: phase-2
+    test_stage: docs_structure
+    product: Docs
+    name: 插入编号列表
+    instruction: 在“CUA-Lark Docs 测试文档 DOCS-P2-001”中插入编号列表，内容是“DOCS-P2-007 第一步：观察界面”“DOCS-P2-007 第二步：执行操作”“DOCS-P2-007 第三步：验证结果”
+    expected: 文档正文中出现三项 DOCS-P2-007 编号列表
+    allowed_actions: [click, type_text, hotkey, wait, scroll]
+    verification:
+      method: final_visual_semantic
+      assertion: 文档中出现三项编号列表，包含 DOCS-P2-007 观察界面、执行操作、验证结果
+
+  - id: DOCS-P2-008
+    phase: phase-2
+    test_stage: docs_share
+    product: Docs
+    name: 分享文档给孙浩翔
+    instruction: 把当前“CUA-Lark Docs 测试文档 DOCS-P2-001”分享给孙浩翔
+    expected: 分享弹窗或文档权限界面显示孙浩翔已被添加，或出现已发送/已分享的成功状态
+    allowed_actions: [click, type_text, hotkey, wait, scroll]
+    verification:
+      method: final_visual_semantic
+      assertion: 文档分享流程显示孙浩翔已被添加、已发送邀请或已获得访问权限
+
+  - id: DOCS-P2-009
+    phase: phase-2
+    test_stage: docs_share
+    product: Docs
+    name: 检查文档分享入口和权限状态
+    instruction: 打开“CUA-Lark Docs 测试文档 DOCS-P2-001”的分享入口，查看当前分享或权限状态
+    expected: 页面显示文档分享弹窗、权限设置或协作者列表
+    allowed_actions: [click, wait, scroll]
+    verification:
+      method: final_visual_semantic
+      assertion: 当前界面显示文档分享弹窗、权限设置或协作者列表，而不是普通正文编辑状态

@@ -1,0 +1,102 @@
+# Phase 1 Docs 环境与专项单步冒烟
+# 设计目标：
+# 1. 确认飞书桌面端可进入云文档，并能识别 Docs 首页/搜索/新建/编辑/分享等关键区域
+# 2. 只验证 Docs 场景下的关键单步能力，不重复证明通用 M1 动作全集
+# 3. 所有动作必须基于当前截图和 VLM grounding，不使用固定坐标或历史脚本
+
+test_stages:
+  - id: docs_entry
+    order: 1
+    name: Docs 环境与入口确认
+    description: 确认能从飞书当前界面进入云文档，并识别云文档首页、搜索框、新建入口。
+    cases: [DOCS-SMOKE-001, DOCS-SMOKE-002, DOCS-SMOKE-003]
+  - id: docs_editor_smoke
+    order: 2
+    name: Docs 编辑器单步冒烟
+    description: 确认能打开或创建测试文档，并在标题字段、正文编辑区、格式入口、分享入口上完成最小交互。
+    cases: [DOCS-SMOKE-004, DOCS-SMOKE-005, DOCS-SMOKE-006, DOCS-SMOKE-007]
+
+test_cases:
+  - id: DOCS-SMOKE-001
+    phase: phase-1
+    test_stage: docs_entry
+    product: Docs
+    name: 进入云文档首页
+    instruction: 打开飞书云文档首页
+    expected: 当前界面显示飞书云文档首页、最近文档列表、搜索框或新建入口
+    allowed_actions: [click, hotkey, wait, scroll]
+    verification:
+      method: final_visual_semantic
+      assertion: 当前界面是飞书云文档相关页面，能看到云文档首页、最近文档列表、搜索框或新建入口
+
+  - id: DOCS-SMOKE-002
+    phase: phase-1
+    test_stage: docs_entry
+    product: Docs
+    name: 聚焦云文档搜索框
+    instruction: 在飞书云文档中点击搜索框，让搜索框处于可输入状态
+    expected: 云文档搜索框获得焦点，或出现搜索输入界面
+    allowed_actions: [click, hotkey, wait]
+    verification:
+      method: final_visual_semantic
+      assertion: 当前界面显示云文档搜索输入状态、搜索弹窗或光标所在的搜索框
+
+  - id: DOCS-SMOKE-003
+    phase: phase-1
+    test_stage: docs_entry
+    product: Docs
+    name: 搜索测试文档关键词
+    instruction: 在飞书云文档中搜索“CUA-Lark Docs 测试文档”
+    expected: 云文档搜索界面中出现搜索关键词或相关搜索结果
+    allowed_actions: [click, type_text, hotkey, wait]
+    verification:
+      method: final_visual_semantic
+      assertion: 搜索框中显示“CUA-Lark Docs 测试文档”，或搜索结果区域显示相关文档/无结果提示
+
+  - id: DOCS-SMOKE-004
+    phase: phase-1
+    test_stage: docs_editor_smoke
+    product: Docs
+    name: 打开新建文档入口
+    instruction: 在飞书云文档中打开新建文档入口，进入可编辑的新文档页面
+    expected: 当前界面显示可编辑的新文档页面，包含标题字段或正文编辑区
+    allowed_actions: [click, hotkey, wait, scroll]
+    verification:
+      method: final_visual_semantic
+      assertion: 当前界面显示新建文档编辑页，能看到标题字段或正文编辑区域
+
+  - id: DOCS-SMOKE-005
+    phase: phase-1
+    test_stage: docs_editor_smoke
+    product: Docs
+    name: 文档标题字段输入短文本
+    instruction: 在当前云文档编辑页点击文档标题字段，输入标题“CUA-Lark Docs 冒烟标题”
+    expected: 当前云文档标题显示“CUA-Lark Docs 冒烟标题”
+    allowed_actions: [click, type_text, hotkey, wait]
+    verification:
+      method: final_visual_semantic
+      assertion: 当前云文档标题字段显示“CUA-Lark Docs 冒烟标题”，而不是只出现在正文区域
+
+  - id: DOCS-SMOKE-006
+    phase: phase-1
+    test_stage: docs_editor_smoke
+    product: Docs
+    name: 正文编辑区输入短文本
+    instruction: 在当前云文档正文编辑区输入“CUA-Lark Docs 冒烟输入”
+    expected: 文档正文区域出现“CUA-Lark Docs 冒烟输入”
+    allowed_actions: [click, type_text, hotkey, wait]
+    verification:
+      method: final_visual_semantic
+      assertion: 文档正文区域显示“CUA-Lark Docs 冒烟输入”
+
+  - id: DOCS-SMOKE-007
+    phase: phase-1
+    test_stage: docs_editor_smoke
+    product: Docs
+    name: 打开文档分享入口
+    instruction: 在当前云文档中打开分享入口，但不要发送分享邀请
+    expected: 当前界面显示文档分享弹窗、权限设置或协作者列表
+    allowed_actions: [click, wait, hotkey]
+    verification:
+      method: final_visual_semantic
+      assertion: 当前界面显示分享弹窗、权限设置或协作者列表，并且没有发送新的分享邀请

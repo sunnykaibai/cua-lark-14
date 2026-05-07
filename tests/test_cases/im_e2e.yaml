@@ -1,0 +1,105 @@
+# Phase 2 IM 端到端验收与扩展用例
+# 设计目标：
+# 1. 指令保持用户视角，不把“如何根据当前状态决策”写进 instruction
+# 2. 覆盖文本、链接、表情、消息反应、右键菜单、滚动定位等更真实的 IM 交互
+# 3. 鼓励模型基于当前截图一次规划出尽可能多的连续操作
+
+test_cases:
+  - id: IM-E2E-001
+    phase: phase-2
+    product: IM
+    name: 打开目标会话并发送普通文本
+    instruction: 在飞书 IM 中找到与“孙浩翔”的聊天窗口，发送消息“CUA-Lark Phase2 连贯测试 01”，并确认该消息出现在聊天记录中
+    expected: 孙浩翔的聊天窗口中出现消息“CUA-Lark Phase2 连贯测试 01”
+    allowed_actions: [click, type_text, hotkey, wait]
+    verification:
+      method: final_visual_semantic
+      assertion: 目标聊天窗口中出现普通文本消息
+
+  - id: IM-E2E-002
+    phase: phase-2
+    product: IM
+    name: 在目标会话中发送链接消息
+    instruction: 在与“孙浩翔”的聊天窗口中发送消息“请查看这个链接：https://open.feishu.cn/”，并确认该消息成功出现在聊天记录中
+    expected: 孙浩翔的聊天窗口中出现消息“请查看这个链接：https://open.feishu.cn/”
+    allowed_actions: [click, type_text, hotkey, wait, scroll]
+    verification:
+      method: final_visual_semantic
+      assertion: 目标聊天窗口中出现包含链接的消息
+
+  - id: IM-E2E-003
+    phase: phase-2
+    product: IM
+    name: 从表情面板发送第三个可见表情
+    instruction: 在与“孙浩翔”的聊天窗口中点击表情按钮，从表情列表中选择第三个可见表情并发送，确认该表情消息出现在聊天记录中
+    expected: 孙浩翔的聊天窗口中出现一条新发送的表情消息
+    allowed_actions: [click, hotkey, wait, scroll]
+    verification:
+      method: final_visual_semantic
+      assertion: 目标聊天窗口中出现新发送的表情消息
+
+  - id: IM-E2E-004
+    phase: phase-2
+    product: IM
+    name: 给孙浩翔最后一条消息点赞
+    instruction: 在与“孙浩翔”的聊天窗口中定位他发送的最后一条消息，为该消息添加点赞反应，并确认消息旁出现点赞状态
+    expected: 孙浩翔最后一条消息出现点赞反应
+    allowed_actions: [click, double_click, right_click, wait, scroll]
+    verification:
+      method: final_visual_semantic
+      assertion: 目标消息旁出现点赞反应或对应的点赞状态
+
+  - id: IM-E2E-005
+    phase: phase-2
+    product: IM
+    name: 发送文本加表情的组合消息
+    instruction: 在与“孙浩翔”的聊天窗口中发送消息“CUA-Lark 组合消息测试 😄”，并确认消息成功出现在聊天记录中
+    expected: 孙浩翔的聊天窗口中出现消息“CUA-Lark 组合消息测试 😄”
+    allowed_actions: [click, type_text, hotkey, wait, scroll]
+    verification:
+      method: final_visual_semantic
+      assertion: 目标聊天窗口中出现文本加表情的组合消息
+
+  - id: IM-E2E-006
+    phase: phase-2
+    product: IM
+    name: 右键最后一条消息并打开菜单
+    instruction: 在与“孙浩翔”的聊天窗口中找到最新一条聊天消息，对该消息执行右键点击，确认消息上下文菜单被成功打开
+    expected: 当前消息旁出现右键菜单或消息操作菜单
+    allowed_actions: [click, right_click, wait, scroll]
+    verification:
+      method: final_visual_semantic
+      assertion: 当前界面出现消息上下文菜单
+
+  - id: IM-E2E-007
+    phase: phase-2
+    product: IM
+    name: 双击目标会话后发送确认消息
+    instruction: 在飞书左侧会话列表中双击“孙浩翔”的会话，进入聊天窗口后发送消息“CUA-Lark 双击进入测试”，并确认该消息出现在聊天记录中
+    expected: 孙浩翔的聊天窗口中出现消息“CUA-Lark 双击进入测试”
+    allowed_actions: [click, double_click, type_text, hotkey, wait]
+    verification:
+      method: final_visual_semantic
+      assertion: 目标聊天窗口中出现双击进入后发送的消息
+
+  - id: IM-E2E-008
+    phase: phase-2
+    product: IM
+    name: 在支持提及的会话中发送 @ 消息
+    instruction: 在当前支持 @ 提及的飞书聊天窗口中，@孙浩翔 并发送消息“CUA-Lark @提及测试”，确认该消息成功出现在聊天记录中
+    expected: 当前聊天窗口中出现包含“CUA-Lark @提及测试”的 @ 提及消息
+    allowed_actions: [click, type_text, hotkey, wait, scroll]
+    verification:
+      method: final_visual_semantic
+      assertion: 当前聊天窗口中出现 @ 提及消息
+
+  - id: IM-E2E-009
+    phase: phase-2
+    product: IM
+    name: 给孙浩翔最后一条消息添加 +1 表情反应
+    instruction: 在与“孙浩翔”的聊天窗口中定位他发送的最后一条消息，为该消息添加“+1”表情反应，并确认消息旁出现 +1 状态
+    expected: 孙浩翔最后一条消息出现 +1 表情反应
+    allowed_actions: [click, double_click, right_click, wait, scroll]
+    verification:
+      method: final_visual_semantic
+      assertion: 目标消息旁出现 +1 表情反应或对应的 +1 状态

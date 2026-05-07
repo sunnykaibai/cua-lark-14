@@ -1,0 +1,358 @@
+# Docs Layer 6 R3 clean-document regression cases
+# Generated from docs-feature-autotackle.yaml with a unique clean title.
+# Original shared fixture remains unchanged.
+
+test_stages:
+- id: docs_r3_layer6_clean_provision
+  order: 0
+  name: Docs Layer6 R3 干净文档准备
+  description: 创建唯一命名的 Layer6 三轮干净测试文档，并导入完整深水区素材。
+  cases:
+  - DOCS-R3-L6-CLEAN-PROVISION-001
+- id: docs_realistic_composition
+  order: 1
+  name: Docs 真人组合操作 Layer6 R3 Clean
+  description: 在干净文档“CUA-Lark Docs Layer6 R3 Clean 20260430”上重跑 15 个 Layer6 组合功能用例。
+  cases:
+  - DOCS-FEAT-COMP-001
+  - DOCS-FEAT-COMP-002
+  - DOCS-FEAT-COMP-003
+  - DOCS-FEAT-COMP-004
+  - DOCS-FEAT-COMP-005
+  - DOCS-FEAT-COMP-006
+  - DOCS-FEAT-COMP-007
+  - DOCS-FEAT-COMP-008
+  - DOCS-FEAT-COMP-009
+  - DOCS-FEAT-COMP-010
+  - DOCS-FEAT-COMP-011
+  - DOCS-FEAT-COMP-012
+  - DOCS-FEAT-COMP-013
+  - DOCS-FEAT-COMP-014
+  - DOCS-FEAT-COMP-015
+test_cases:
+- id: DOCS-R3-L6-CLEAN-PROVISION-001
+  phase: phase-2
+  test_stage: docs_r3_layer6_clean_provision
+  product: Docs
+  name: 创建 Layer6 R3 干净测试文档并导入素材
+  instruction: 在飞书云文档中新建一个文档，标题设为“CUA-Lark Docs Layer6 R3 Clean 20260430”，然后在正文中粘贴本地 Markdown 素材“{{ASSETS_DIR}}/docs-feature-material.md”的完整内容。如果当前已经打开同名文档且正文已经包含“DOCS-FEATURE-MATERIAL-ROOT-7A2D”和“DOCS-FEATURE-COMPOSITION-HEADING-2F4C”，直接完成；否则必须创建或打开这个同名文档并补齐素材正文。
+  expected: 当前浏览器或飞书云文档页面打开“CUA-Lark Docs Layer6 R3 Clean 20260430”，正文包含 DOCS-FEATURE-MATERIAL-ROOT-7A2D 和组合功能锚点
+  input_materials:
+  - path: '{{ASSETS_DIR}}/docs-feature-material.md'
+    label: docs-feature-material.md
+  allowed_actions:
+  - click
+  - type_text
+  - hotkey
+  - wait
+  - scroll
+  verification:
+    method: final_visual_semantic
+    assertion: 当前页面是“CUA-Lark Docs Layer6 R3 Clean 20260430”，正文中可见“DOCS-FEATURE-MATERIAL-ROOT-7A2D”和“DOCS-FEATURE-COMPOSITION-HEADING-2F4C”或多个
+      DOCS-FEATURE-COMP 所需锚点，且不是旧文档“CUA-Lark Docs 测试文档 DOCS-P2-001”。
+- id: DOCS-FEAT-COMP-001
+  phase: phase-2
+  test_stage: docs_realistic_composition
+  product: Docs
+  name: 在锚点后插入三列表格
+  instruction: 打开“CUA-Lark Docs Layer6 R3 Clean 20260430”，找到“DOCS-FEATURE-TABLE-ANCHOR-3C2A”，在它后面插入一个三列两行以上的表格，表头为“事项、负责人、状态”，并在下一行数据行填入“素材复核、测试扩展、完成”。表头和数据必须在不同表格行，中间要有可见横向行边界；如果看到“事项/素材复核”“负责人/测试扩展”“状态/完成”上下堆在同一批单元格里，下面还有空行，这不是通过，必须修复。
+  expected: 指定锚点后出现包含表头和数据的真实表格，表头行与数据行由横向网格线分隔
+  input_materials:
+  - path: '{{ASSETS_DIR}}/docs-feature-material.md'
+    label: docs-feature-material.md
+  allowed_actions:
+  - click
+  - type_text
+  - hotkey
+  - wait
+  - scroll
+  verification:
+    method: final_visual_semantic
+    assertion: “DOCS-FEATURE-TABLE-ANCHOR-3C2A”后可见表格网格或表格结构，且同一表格内可见“事项”“负责人”“状态”“素材复核”“测试扩展”“完成”；“事项/负责人/状态”必须在表头行，“素材复核/测试扩展/完成”必须在下一行数据行，两行之间必须有可见横向网格线；如果这些文字只是上下堆在同一批单元格中且下方为空行，则判为失败；页面标题或文档标题应对应“CUA-Lark Docs
+      Layer6 R3 Clean 20260430”，不能是旧文档“CUA-Lark Docs 测试文档 DOCS-P2-001”。
+- id: DOCS-FEAT-COMP-002
+  phase: phase-2
+  test_stage: docs_realistic_composition
+  product: Docs
+  name: 创建待办清单并勾选一项
+  instruction: 打开“CUA-Lark Docs Layer6 R3 Clean 20260430”，在“DOCS-FEATURE-CHECKLIST-ANCHOR-4E8D”后创建待办清单，包含“DOCS-FEATURE-CHECKLIST-DONE-4E8D”和“DOCS-FEATURE-CHECKLIST-TODO-4E8D”，并把第一项标为已完成
+  expected: 锚点后出现两项待办清单，第一项为已完成状态，第二项仍未完成
+  input_materials:
+  - path: '{{ASSETS_DIR}}/docs-feature-material.md'
+    label: docs-feature-material.md
+  allowed_actions:
+  - click
+  - type_text
+  - hotkey
+  - wait
+  - scroll
+  verification:
+    method: final_visual_semantic
+    assertion: 可见“DOCS-FEATURE-CHECKLIST-DONE-4E8D”和“DOCS-FEATURE-CHECKLIST-TODO-4E8D”，两者呈现为待办/复选框列表，且第一项显示已勾选或完成样式；页面标题或文档标题应对应“CUA-Lark
+      Docs Layer6 R3 Clean 20260430”，不能是旧文档“CUA-Lark Docs 测试文档 DOCS-P2-001”。
+- id: DOCS-FEAT-COMP-003
+  phase: phase-2
+  test_stage: docs_realistic_composition
+  product: Docs
+  name: 插入分割线分隔两段
+  instruction: 打开“CUA-Lark Docs Layer6 R3 Clean 20260430”，在“DOCS-FEATURE-DIVIDER-BEFORE-6B70”和“DOCS-FEATURE-DIVIDER-AFTER-6B70”之间插入一条分割线
+  expected: 两个锚点之间可见水平分割线
+  input_materials:
+  - path: '{{ASSETS_DIR}}/docs-feature-material.md'
+    label: docs-feature-material.md
+  allowed_actions:
+  - click
+  - double_click
+  - type_text
+  - hotkey
+  - wait
+  - scroll
+  verification:
+    method: final_visual_semantic
+    assertion: “DOCS-FEATURE-DIVIDER-BEFORE-6B70”和“DOCS-FEATURE-DIVIDER-AFTER-6B70”之间可见一条横向分割线或明显的分隔结构；页面标题或文档标题应对应“CUA-Lark
+      Docs Layer6 R3 Clean 20260430”，不能是旧文档“CUA-Lark Docs 测试文档 DOCS-P2-001”。
+- id: DOCS-FEAT-COMP-004
+  phase: phase-2
+  test_stage: docs_realistic_composition
+  product: Docs
+  name: 给局部文本添加链接
+  instruction: 打开“CUA-Lark Docs Layer6 R3 Clean 20260430”，把文本“DOCS-FEATURE-LINK-TARGET-8A41”设置为链接，链接地址使用“https://example.com/docs-feature-link-8a41”
+  expected: 指定文本保留并呈现为链接样式
+  input_materials:
+  - path: '{{ASSETS_DIR}}/docs-feature-material.md'
+    label: docs-feature-material.md
+  allowed_actions:
+  - click
+  - drag
+  - type_text
+  - hotkey
+  - wait
+  - scroll
+  verification:
+    method: final_visual_semantic
+    assertion: 文档正文中“DOCS-FEATURE-LINK-TARGET-8A41”可见，且呈现为可点击链接样式或打开链接浮层时显示“example.com/docs-feature-link-8a41”；页面标题或文档标题应对应“CUA-Lark
+      Docs Layer6 R3 Clean 20260430”，不能是旧文档“CUA-Lark Docs 测试文档 DOCS-P2-001”。
+- id: DOCS-FEAT-COMP-005
+  phase: phase-2
+  test_stage: docs_realistic_composition
+  product: Docs
+  name: 对选中文本添加评论
+  instruction: 打开“CUA-Lark Docs Layer6 R3 Clean 20260430”，选中“DOCS-FEATURE-COMMENT-TARGET-5F19”，给它添加评论“DOCS-FEATURE-COMMENT-NOTE-5F19：请二次复核”
+  expected: 指定文本旁出现评论或批注入口，评论内容可见或可打开查看
+  input_materials:
+  - path: '{{ASSETS_DIR}}/docs-feature-material.md'
+    label: docs-feature-material.md
+  allowed_actions:
+  - click
+  - drag
+  - type_text
+  - hotkey
+  - wait
+  - scroll
+  verification:
+    method: final_visual_semantic
+    assertion: “DOCS-FEATURE-COMMENT-TARGET-5F19”旁可见评论标记、评论侧栏或批注入口，并可见“DOCS-FEATURE-COMMENT-NOTE-5F19：请二次复核”；页面标题或文档标题应对应“CUA-Lark
+      Docs Layer6 R3 Clean 20260430”，不能是旧文档“CUA-Lark Docs 测试文档 DOCS-P2-001”。
+- id: DOCS-FEAT-COMP-006
+  phase: phase-2
+  test_stage: docs_realistic_composition
+  product: Docs
+  name: 复制粘贴文档内局部文本
+  instruction: 打开“CUA-Lark Docs Layer6 R3 Clean 20260430”，复制只包含“DOCS-FEATURE-COPY-SOURCE-2D91”的那一行，把它粘贴到“DOCS-FEATURE-COPY-DEST-2D91”后面，并保留原来源行
+  expected: 目标锚点后出现复制来的那一行，来源行仍存在
+  input_materials:
+  - path: '{{ASSETS_DIR}}/docs-feature-material.md'
+    label: docs-feature-material.md
+  allowed_actions:
+  - click
+  - drag
+  - type_text
+  - hotkey
+  - wait
+  - scroll
+  verification:
+    method: final_visual_semantic
+    assertion: 文档中来源位置仍可见“DOCS-FEATURE-COPY-SOURCE-2D91”，且“DOCS-FEATURE-COPY-DEST-2D91”后也可见一份“DOCS-FEATURE-COPY-SOURCE-2D91”；页面标题或文档标题应对应“CUA-Lark
+      Docs Layer6 R3 Clean 20260430”，不能是旧文档“CUA-Lark Docs 测试文档 DOCS-P2-001”。
+- id: DOCS-FEAT-COMP-007
+  phase: phase-2
+  test_stage: docs_realistic_composition
+  product: Docs
+  name: 移动段落到另一段之前
+  instruction: 打开“CUA-Lark Docs Layer6 R3 Clean 20260430”，把整段“DOCS-FEATURE-MOVE-SOURCE-9E34：需要移动到目标前”移动到“DOCS-FEATURE-MOVE-TARGET-9E34：目标段落”之前
+  expected: 来源段落最终位于目标段落之前，且没有重复残留
+  input_materials:
+  - path: '{{ASSETS_DIR}}/docs-feature-material.md'
+    label: docs-feature-material.md
+  allowed_actions:
+  - click
+  - drag
+  - type_text
+  - hotkey
+  - wait
+  - scroll
+  verification:
+    method: final_visual_semantic
+    assertion: 可见“DOCS-FEATURE-MOVE-SOURCE-9E34：需要移动到目标前”紧邻或明显位于“DOCS-FEATURE-MOVE-TARGET-9E34：目标段落”之前，来源段没有在原位置重复出现；页面标题或文档标题应对应“CUA-Lark
+      Docs Layer6 R3 Clean 20260430”，不能是旧文档“CUA-Lark Docs 测试文档 DOCS-P2-001”。
+- id: DOCS-FEAT-COMP-008
+  phase: phase-2
+  test_stage: docs_realistic_composition
+  product: Docs
+  name: 只格式化句中局部短语
+  instruction: 打开“CUA-Lark Docs Layer6 R3 Clean 20260430”，在包含“DOCS-FEATURE-PARTIAL-FMT-7C66”的句子里，只把短语“局部高亮词-7C66”设置为高亮或加粗，不要改变同一句其他文字样式
+  expected: 只有指定短语呈现高亮或加粗样式，同句锚点仍为普通样式
+  input_materials:
+  - path: '{{ASSETS_DIR}}/docs-feature-material.md'
+    label: docs-feature-material.md
+  allowed_actions:
+  - click
+  - drag
+  - type_text
+  - hotkey
+  - wait
+  - scroll
+  verification:
+    method: final_visual_semantic
+    assertion: 同一句中可见“DOCS-FEATURE-PARTIAL-FMT-7C66”和“局部高亮词-7C66”，且只有“局部高亮词-7C66”呈现高亮或加粗等局部格式；页面标题或文档标题应对应“CUA-Lark Docs Layer6
+      R3 Clean 20260430”，不能是旧文档“CUA-Lark Docs 测试文档 DOCS-P2-001”。
+- id: DOCS-FEAT-COMP-009
+  phase: phase-2
+  test_stage: docs_realistic_composition
+  product: Docs
+  name: 搜索定位后编辑目标段
+  instruction: 打开“CUA-Lark Docs Layer6 R3 Clean 20260430”，搜索“DOCS-FEATURE-SEARCH-EDIT-0A52”，定位后在该段末尾追加“DOCS-FEATURE-SEARCH-EDIT-DONE-0A52”
+  expected: 搜索到的目标段末尾出现追加标记
+  input_materials:
+  - path: '{{ASSETS_DIR}}/docs-feature-material.md'
+    label: docs-feature-material.md
+  allowed_actions:
+  - click
+  - type_text
+  - hotkey
+  - wait
+  - scroll
+  verification:
+    method: final_visual_semantic
+    assertion: 当前可见区域包含“DOCS-FEATURE-SEARCH-EDIT-0A52”，且同段或其后紧邻位置可见“DOCS-FEATURE-SEARCH-EDIT-DONE-0A52”；页面标题或文档标题应对应“CUA-Lark
+      Docs Layer6 R3 Clean 20260430”，不能是旧文档“CUA-Lark Docs 测试文档 DOCS-P2-001”。
+- id: DOCS-FEAT-COMP-010
+  phase: phase-2
+  test_stage: docs_realistic_composition
+  product: Docs
+  name: 滚动定位后编辑深层目标
+  instruction: 打开“CUA-Lark Docs Layer6 R3 Clean 20260430”，滚动到“DOCS-FEATURE-SCROLL-EDIT-B13D”，在该段后新增“DOCS-FEATURE-SCROLL-EDIT-DONE-B13D：滚动后编辑成功”
+  expected: 深层滚动目标后出现新增文本
+  input_materials:
+  - path: '{{ASSETS_DIR}}/docs-feature-material.md'
+    label: docs-feature-material.md
+  allowed_actions:
+  - click
+  - type_text
+  - hotkey
+  - wait
+  - scroll
+  verification:
+    method: final_visual_semantic
+    assertion: 当前可见正文中“DOCS-FEATURE-SCROLL-EDIT-B13D”后可见“DOCS-FEATURE-SCROLL-EDIT-DONE-B13D：滚动后编辑成功”；页面标题或文档标题应对应“CUA-Lark
+      Docs Layer6 R3 Clean 20260430”，不能是旧文档“CUA-Lark Docs 测试文档 DOCS-P2-001”。
+- id: DOCS-FEAT-COMP-011
+  phase: phase-2
+  test_stage: docs_realistic_composition
+  product: Docs
+  name: 新建标题并用目录定位
+  instruction: 打开“CUA-Lark Docs Layer6 R3 Clean 20260430”，在“DOCS-FEATURE-HEADING-TOC-ANCHOR-A0D8”后新增二级标题“DOCS-FEATURE-HEADING-TOC-NEW-A0D8”，然后借助文档目录定位到这个新标题
+  expected: 新标题呈现为标题样式，并可通过目录回到该标题位置
+  input_materials:
+  - path: '{{ASSETS_DIR}}/docs-feature-material.md'
+    label: docs-feature-material.md
+  allowed_actions:
+  - click
+  - type_text
+  - hotkey
+  - wait
+  - scroll
+  verification:
+    method: final_visual_semantic
+    assertion: 当前正文可见“DOCS-FEATURE-HEADING-TOC-NEW-A0D8”，它呈现为标题样式；目录或大纲中也可见该标题，或视图已通过目录定位回该标题附近；页面标题或文档标题应对应“CUA-Lark Docs
+      Layer6 R3 Clean 20260430”，不能是旧文档“CUA-Lark Docs 测试文档 DOCS-P2-001”。
+- id: DOCS-FEAT-COMP-012
+  phase: phase-2
+  test_stage: docs_realistic_composition
+  product: Docs
+  name: 创建嵌套列表
+  instruction: 打开“CUA-Lark Docs Layer6 R3 Clean 20260430”，在“DOCS-FEATURE-NESTED-LIST-ANCHOR-1B6E”后创建嵌套列表：一级项“DOCS-FEATURE-NESTED-PARENT-1B6E”，其下包含二级项“DOCS-FEATURE-NESTED-CHILD-1B6E”
+  expected: 锚点后出现有缩进层级的嵌套列表
+  input_materials:
+  - path: '{{ASSETS_DIR}}/docs-feature-material.md'
+    label: docs-feature-material.md
+  allowed_actions:
+  - click
+  - type_text
+  - hotkey
+  - wait
+  - scroll
+  verification:
+    method: final_visual_semantic
+    assertion: 可见“DOCS-FEATURE-NESTED-PARENT-1B6E”和“DOCS-FEATURE-NESTED-CHILD-1B6E”，且子项相对父项有明显缩进或二级列表结构；页面标题或文档标题应对应“CUA-Lark
+      Docs Layer6 R3 Clean 20260430”，不能是旧文档“CUA-Lark Docs 测试文档 DOCS-P2-001”。
+- id: DOCS-FEAT-COMP-013
+  phase: phase-2
+  test_stage: docs_realistic_composition
+  product: Docs
+  name: 插入任务列表并保留未完成项
+  instruction: 打开“CUA-Lark Docs Layer6 R3 Clean 20260430”，在“DOCS-FEATURE-TASKLIST-ANCHOR-3D49”后插入任务列表，包含“DOCS-FEATURE-TASKLIST-OPEN-3D49：待确认”和“DOCS-FEATURE-TASKLIST-DONE-3D49：已确认”，并把已确认项标为完成
+  expected: 锚点后出现任务列表，一项未完成，一项已完成
+  input_materials:
+  - path: '{{ASSETS_DIR}}/docs-feature-material.md'
+    label: docs-feature-material.md
+  allowed_actions:
+  - click
+  - type_text
+  - hotkey
+  - wait
+  - scroll
+  verification:
+    method: final_visual_semantic
+    assertion: 两个任务列表项均可见，“DOCS-FEATURE-TASKLIST-OPEN-3D49”未勾选，“DOCS-FEATURE-TASKLIST-DONE-3D49”显示勾选或完成样式；页面标题或文档标题应对应“CUA-Lark
+      Docs Layer6 R3 Clean 20260430”，不能是旧文档“CUA-Lark Docs 测试文档 DOCS-P2-001”。
+- id: DOCS-FEAT-COMP-014
+  phase: phase-2
+  test_stage: docs_realistic_composition
+  product: Docs
+  name: 从本地 Markdown 局部复制粘贴议程
+  instruction: 打开“CUA-Lark Docs Layer6 R3 Clean 20260430”，从本地 Markdown 素材中读取“DOCS-FEATURE-LOCAL-MD-SNIPPET-START-58AF”和“DOCS-FEATURE-LOCAL-MD-SNIPPET-END-58AF”之间的议程片段，并在“DOCS-FEATURE-LOCAL-MD-PASTE-ANCHOR-58AF”后导入为飞书文档结构：标题“DOCS-FEATURE-LOCAL-MD-AGENDA-58AF”应呈现为标题样式，三条议程“同步目标”“确认风险”“输出结论”应呈现为项目符号列表。不要把 Markdown 源码、START/END 标记或整份素材原样粘贴进去；如果先粘贴出了 raw Markdown，应清理后重建为结构化结果。
+  expected: 指定锚点后出现渲染后的标题和项目符号议程列表，且没有 raw Markdown 标记、START/END 标记或整份素材粘贴残留
+  input_materials:
+  - path: '{{ASSETS_DIR}}/docs-feature-material.md'
+    label: docs-feature-material.md
+  allowed_actions:
+  - click
+  - type_text
+  - hotkey
+  - wait
+  - scroll
+  verification:
+    method: final_visual_semantic
+    assertion: “DOCS-FEATURE-LOCAL-MD-PASTE-ANCHOR-58AF”后可见标题样式的“DOCS-FEATURE-LOCAL-MD-AGENDA-58AF”，其下可见项目符号列表条目“同步目标”“确认风险”“输出结论”；该目标结果附近不得出现 raw Markdown 标记“###”、普通文本列表前缀“- ”、孤立标点行“。”、START/END 标记或整份素材根标识“DOCS-FEATURE-MATERIAL-ROOT-7A2D”；不得把下方原素材区中的同名片段当成完成证据；页面标题或文档标题应对应“CUA-Lark
+      Docs Layer6 R3 Clean 20260430”，不能是旧文档“CUA-Lark Docs 测试文档 DOCS-P2-001”。
+- id: DOCS-FEAT-COMP-015
+  phase: phase-2
+  test_stage: docs_realistic_composition
+  product: Docs
+  name: 从本地 Markdown 局部复制粘贴表格
+  instruction: 打开“CUA-Lark Docs Layer6 R3 Clean 20260430”，从本地 Markdown 素材中读取“DOCS-FEATURE-LOCAL-TABLE-START-0F27”和“DOCS-FEATURE-LOCAL-TABLE-END-0F27”之间的小表格，并在“DOCS-FEATURE-LOCAL-TABLE-PASTE-0F27”后导入为真实飞书表格或清晰的表格化块：表头为“阶段、动作、验收”，数据行包含“准备、局部粘贴、可见”和“收尾、风险标注、完成”。不要只粘贴 Markdown pipe table 源码；如果 pipe table 没有渲染成表格，应使用飞书表格/块控件重建。
+  expected: 指定锚点后出现真实表格网格或清晰的飞书表格化块，且没有 literal Markdown pipe table 源码残留
+  input_materials:
+  - path: '{{ASSETS_DIR}}/docs-feature-material.md'
+    label: docs-feature-material.md
+  allowed_actions:
+  - click
+  - type_text
+  - hotkey
+  - wait
+  - scroll
+  verification:
+    method: final_visual_semantic
+    assertion: “DOCS-FEATURE-LOCAL-TABLE-PASTE-0F27”后可见真实表格网格、表格块或明显按列对齐的飞书表格化结构，同一结构内包含“阶段”“动作”“验收”“准备”“局部粘贴”“可见”“收尾”“风险标注”“完成”；不得只有 literal Markdown pipe table 文本，例如“| 阶段 | 动作 | 验收 |”或“| --- | --- | --- |”；不得把下方原素材区中的同名表格当成完成证据；页面标题或文档标题应对应“CUA-Lark Docs
+      Layer6 R3 Clean 20260430”，不能是旧文档“CUA-Lark Docs 测试文档 DOCS-P2-001”。
