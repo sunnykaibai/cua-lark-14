@@ -22,10 +22,9 @@ Thumbs.db
 # Upstream repo (separate project)
 cua/
 
-# Internal docs
+# Internal docs (not needed to run)
 ablation/
 work_dairy/
-assets/
 项目展示文档.md
 
 # Output

@@ -1,0 +1,3 @@
+CUA-Lark IM upload test file.
+
+This small text file is used by Phase 2 IM attachment test cases.
