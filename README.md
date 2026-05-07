@@ -69,8 +69,7 @@ observe(screenshot) → judge_goal(Goal Contract) → if satisfied: finished
 |---------|---------|--------|-----------|
 | IM | 飞书桌面端 | 25 个 | basic_send, message_ops, conversation_ops, attachment_share |
 | Docs | 浏览器 | 9 个 | docs_create, docs_edit, docs_structure, docs_share |
-| Calendar | 飞书桌面端 | 演示用例 | - |
-| Mail | 飞书桌面端 | 演示用例 | - |
+| Calendar | 飞书桌面端 | 3 个 | calendar_demo_e2e |
 
 ## 项目结构
 
